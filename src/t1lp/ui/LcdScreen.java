@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static java.lang.Integer.max;
-import static java.lang.Integer.min;
-
 /**
  * 绘制计算器LCD液晶显示面板，派生自JPanel
  *
@@ -14,10 +11,15 @@ import static java.lang.Integer.min;
  * @version 1.0
  */
 class LcdScreen extends JPanel {
-    private JLabel labNumber;
-    private LedNumber led;
-    private LedLabel labFunction;
+    private JLabel labNumber;   //显示LED图片的JLabel控件
+    private LedNumber ledNumber;      //用于生成LED数字图片的对象
+    private LedLabel labFunction;   //显示数制、E标的JLabel控件
 
+    /**
+     * 构造函数，初始化UI
+     *
+     * @author Brownlzy
+     */
     public LcdScreen() {
         initGUI();
         //修改Swing显示风格为Windows
@@ -36,12 +38,16 @@ class LcdScreen extends JPanel {
      * @author Brownlzy
      */
     private void initGUI() {
+        //设置边框布局
         this.setLayout(new BorderLayout());
         labNumber = new JLabel();
-        led = new LedNumber(Color.black, new Color(240, 240, 240), Color.white, 36, 63, 7);
+        //初始化对象，设置生成LED图片颜色
+        ledNumber = new LedNumber(Color.black, new Color(240, 240, 240), Color.white, 36, 63, 7);
+        //添加到上方
         this.add(labNumber, BorderLayout.NORTH);
 
         labFunction = new LedLabel();
+        //添加到下方
         this.add(labFunction, BorderLayout.SOUTH);
     }
 
@@ -52,32 +58,37 @@ class LcdScreen extends JPanel {
      * @author Brownlzy
      */
     public void changeLedNumber(String strLedNumber) {
-        if (isMyNumber(strLedNumber)) {
+        if (isMyNumber(strLedNumber)) { //是符合标准的数字
             int scale = getScale(strLedNumber);
+            //使数字符合LED显示的宽度
             String number = formatNumber(strLedNumber);
-            labNumber.setIcon(new ImageIcon(led.getLedImage(number, 9)));
+            //显示数字，宽度为9
+            labNumber.setIcon(new ImageIcon(ledNumber.getLedImage(number, 9)));
             labFunction.changeState(scale);
-        } else {
+        } else {    //不符合标准，抛出错误
             System.out.println(strLedNumber);
             throw new UnsupportedOperationException();
         }
     }
 
+    /**
+     * 获取数制信息
+     *
+     * @param strLedNumber 数字（NUM0d123456789.0）
+     * @return int
+     * @author Brownlzy
+     */
     private int getScale(String strLedNumber) {
-        switch (strLedNumber.charAt(4)) {
-            case 'd':
-                return 10;
-            case 'o':
-                return 8;
-            case 'x':
-                return 16;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (strLedNumber.charAt(4)) {
+            case 'd' -> 10;
+            case 'o' -> 8;
+            case 'x' -> 16;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     /**
-     * This is description of method
+     * 格式化数字字符串，使其适合LCD显示屏
      *
      * @param strLedNumber 待处理的字符串
      * @return java.lang.String
@@ -87,43 +98,37 @@ class LcdScreen extends JPanel {
         String strNum = "";
         String n = strLedNumber.substring(5);
         boolean isNegative = n.contains("-");
-        boolean isDouble=n.contains(".");
+        boolean isDouble = n.contains(".");
         if (isNegative) {
             n = n.substring(1);
             //strNum=strNum+'-';
         }
-        if(!isDouble){
-            n=n+".";
+        if (!isDouble) {
+            n = n + ".";
         }
         String pureNum = n.replace("-", "").replace(".", "");
 
         int dotIndex = n.split("\\.")[0].length();
         if (dotIndex == 8) {
-            strNum=strNum+n.split("\\.")[0];
-        } else if(dotIndex < 8){
-            if(isDouble)
-            strNum=strNum+n.split("\\.")[0]+'.'+n.substring(dotIndex,min(9,n.length()));
+            strNum = strNum + n.split("\\.")[0];
+        } else if (dotIndex < 8) {
+            if (isDouble)
+                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
             else
-                strNum=strNum+n.split("\\.")[0];
-        } else if(dotIndex > 8){
-            strNum=strNum+n.charAt(0)+'.'+n.substring(2,8-String.valueOf(dotIndex-1).length())+'E'+(dotIndex-1);
+                strNum = strNum + n.split("\\.")[0];
+        } else if (dotIndex > 8) {
+            strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
         }
         return strNum;
-
-
-/*
-        int m = n.replace("-", "").split("\\.")[0].length() - 1;
-        String pureNum = n.replace("-", "").replace(".", "");
-        if (n.replace("-", "").replace(".", "").length() > length) {
-            if (n.contains("-"))
-                n = "-";
-            else n = "";
-            n += pureNum.charAt(0) + "." + pureNum.substring(1, length - 1 - String.valueOf(m).length()) + "E" + m;
-            isError = true;
-            throw new IllegalStateException(scale == 10 ? ("NUM0d" + n) : ("NUM0" + (scale == 8 ? "o" : "x") + n));
-        }*/
     }
 
+    /**
+     * 判断数字字符串是否符号标准
+     *
+     * @param strLedNumber 数字（NUM0d123456789.0）
+     * @return boolean
+     * @author Brownlzy
+     */
     private boolean isMyNumber(String strLedNumber) {
         if (strLedNumber.startsWith("NUM0")) {
             switch (strLedNumber.charAt(4)) {
@@ -176,6 +181,7 @@ class LcdScreen extends JPanel {
 
     /**
      * 隐藏LCD屏内容
+     *
      * @author Brownlzy
      */
     void hideMe() {
@@ -200,15 +206,27 @@ class LcdScreen extends JPanel {
      * @version 2.0
      */
     static class LedLabel extends JLabel {
-        private boolean isError;
-        private int scale;
+        private boolean isError;    //是否显示E标
+        private int scale;  //当前进制
 
+        /**
+         * 构造函数
+         *
+         * @author Brownlzy
+         */
         public LedLabel() {
             isError = false;
             scale = 10;
             this.setFont(new Font("Consolas", Font.BOLD, 18));
         }
 
+        /**
+         * 构造函数，初始化成员变量
+         *
+         * @param scale   进制
+         * @param isError E标
+         * @author Brownlzy
+         */
         public LedLabel(int scale, boolean isError) {
             this.isError = isError;
             this.scale = scale;
@@ -251,11 +269,11 @@ class LcdScreen extends JPanel {
     static class LedNumber extends Component {
         private Polygon[] segmentPolygon;   //储存7个二极管轮廓
         /*
-         -----      0
+         -----    --0--
         |     |  5     1
-         -----      6
+         -----    --6--
         |     |  4     2
-         -----      3
+         -----    --3--
          */
         private final int[][] numberSegment = {
                 {0, 1, 2, 3, 4, 5}, // 0
@@ -282,9 +300,9 @@ class LcdScreen extends JPanel {
         private Color fontColor = Color.red;    //字体颜色
         private Color bgColor = Color.black;    //背景颜色
         private Color maskColor = Color.darkGray;   //未点亮二极管颜色
-        private int dWidth = 12;
-        private int dHeight = 21;
-        private int dGasp = 7;
+        private int dWidth = 12;    //单个数字宽度
+        private int dHeight = 21;   //数字高度
+        private int dGasp = 7;  //数字之间的间隔
 
         public LedNumber() {
             init();
@@ -300,12 +318,12 @@ class LcdScreen extends JPanel {
         /**
          * 构造函数，设置生成的Led数字的参数
          *
-         * @param fc     Font Color
-         * @param bgc    Background Color
-         * @param mc     Mask Color
-         * @param width  Width of Number
-         * @param height Heigth of Number
-         * @param gasp   Width between two Numbers
+         * @param fc     字体颜色
+         * @param bgc    背景颜色
+         * @param mc     遮盖颜色
+         * @param width  数字宽度
+         * @param height 数字高度
+         * @param gasp   数字之间的间隔
          * @author Brownlzy
          */
         public LedNumber(Color fc, Color bgc, Color mc, int width, int height, int gasp) {
@@ -319,7 +337,7 @@ class LcdScreen extends JPanel {
         }
 
         /**
-         * This is description of method
+         * 输出数组字符串图片
          *
          * @param str   要输出图片的字符串
          * @param width 图片的宽度（8的个数，不含小数点）
@@ -350,33 +368,26 @@ class LcdScreen extends JPanel {
             return image;
         }
 
+        /**
+         * 字符转数组下标
+         *
+         * @param c 字符
+         * @return int
+         * @author Brownlzy
+         */
         private int charToLedNumber(char c) {
             if (Character.isDigit(c)) return c - 48;
-            switch (c) {
-                case 'A':
-                case 'a':
-                    return 10;
-                case 'B':
-                case 'b':
-                    return 11;
-                case 'C':
-                case 'c':
-                    return 12;
-                case 'D':
-                case 'd':
-                    return 13;
-                case 'E':
-                case 'e':
-                    return 14;
-                case 'F':
-                case 'f':
-                    return 15;
-                case '-':
-                    return 16;
-                case ' ':
-                default:
-                    return 17;
-            }
+            return switch (c) {
+                //大小写不同下标相同
+                case 'A', 'a' -> 10;
+                case 'B', 'b' -> 11;
+                case 'C', 'c' -> 12;
+                case 'D', 'd' -> 13;
+                case 'E', 'e' -> 14;
+                case 'F', 'f' -> 15;
+                case '-' -> 16;
+                default -> 17;
+            };
         }
 
         /**
@@ -391,7 +402,11 @@ class LcdScreen extends JPanel {
             setNumberImage();
         }
 
-
+        /**
+         * 生成每个字符的图片并保存
+         *
+         * @author Brownlzy
+         */
         private void setNumberImage() {
             int i = 0;
             int j;
@@ -420,6 +435,11 @@ class LcdScreen extends JPanel {
             }
         }
 
+        /**
+         * 设置LED数字每个显示管的图形
+         *
+         * @author Brownlzy
+         */
         private void setNumberPolygon() {
             int mid = dHeight / 2 + dHeight / 21;
             segmentPolygon[0] = new Polygon();

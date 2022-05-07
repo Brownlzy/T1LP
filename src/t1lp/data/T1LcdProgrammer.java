@@ -4,14 +4,12 @@ import java.util.Objects;
 
 /**
  * 计算器主类
- *
  * @author Brownlzy
  * @version 1.0
  */
 public class T1LcdProgrammer {
     /**
      * 处理程序启动参数
-     *
      * @param args 程序启动参数
      * @author Brownlzy
      */
@@ -23,7 +21,6 @@ public class T1LcdProgrammer {
 
     /**
      * 程序主函数
-     *
      * @param args 程序启动参数
      * @author Brownlzy
      */
