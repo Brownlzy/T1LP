@@ -11,7 +11,9 @@ public class Calculate {
     }
     /**
      * 根据后缀表达式list计算结果
+     * @author Brownlzy
      * @param list 要计算的后缀表达式
+     * @return String
      */
     private static String calculate(List<String> list) {
         Stack<String> stack = new Stack<>();
@@ -54,6 +56,12 @@ public class Calculate {
         }
         return stack.pop();
     }
+    /**
+     * 中缀表达式转后缀表达式
+     * @author Brownlzy
+     * @param infix 中缀表达式
+     * @return java.util.List java.lang.String
+     */
     private static List<String> doTransform(List<String> infix) {
 
         Stack<String> operatorStack=new Stack<>();
@@ -108,7 +116,8 @@ public class Calculate {
 
     /**
      * 判断字符串是否为操作符
-     *
+     * @author Brownlzy
+     * @return boolean
      * @param op 要判断的字符串
      */
     public static boolean isOperator(String op) {
@@ -117,7 +126,8 @@ public class Calculate {
 
     /**
      * 判断是否为数字
-     *
+     * @author Brownlzy
+     * @return boolean
      * @param num 要判断的字符串
      */
     public static boolean isNumber(String num) {
@@ -126,7 +136,8 @@ public class Calculate {
 
     /**
      * 获取操作符的优先级
-     *
+     * @author Brownlzy
+     * @return boolean
      * @param op 要判断的字符串
      */
     public static int priority(String op) {

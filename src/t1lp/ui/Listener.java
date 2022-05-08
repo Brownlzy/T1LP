@@ -17,7 +17,6 @@ import java.awt.event.KeyListener;
 class Listener {
     /**
      * 命令键输入监听器类
-     * @implNote ActionListener
      * @author Brownlzy
      * @version 1.0
      */
@@ -35,7 +34,6 @@ class Listener {
     }
     /**
      * 输入键输入监听器类
-     * @implNote ActionListener
      * @author Brownlzy
      * @version 1.0
      */
@@ -52,7 +50,6 @@ class Listener {
     }
     /**
      * 键盘输入监听器类
-     * @implNote KeyListener
      * @author Brownlzy
      * @version 1.0
      */

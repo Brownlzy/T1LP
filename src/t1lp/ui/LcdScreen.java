@@ -79,12 +79,16 @@ class LcdScreen extends JPanel {
      * @author Brownlzy
      */
     private int getScale(String strLedNumber) {
-        return switch (strLedNumber.charAt(4)) {
-            case 'd' -> 10;
-            case 'o' -> 8;
-            case 'x' -> 16;
-            default -> throw new UnsupportedOperationException();
-        };
+        switch (strLedNumber.charAt(4)) {
+            case 'd':
+                return 10;
+            case 'o':
+                return 8;
+            case 'x':
+                return 16;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     /**
@@ -370,24 +374,37 @@ class LcdScreen extends JPanel {
 
         /**
          * 字符转数组下标
-         *
          * @param c 字符
          * @return int
          * @author Brownlzy
          */
         private int charToLedNumber(char c) {
             if (Character.isDigit(c)) return c - 48;
-            return switch (c) {
+            switch (c) {
                 //大小写不同下标相同
-                case 'A', 'a' -> 10;
-                case 'B', 'b' -> 11;
-                case 'C', 'c' -> 12;
-                case 'D', 'd' -> 13;
-                case 'E', 'e' -> 14;
-                case 'F', 'f' -> 15;
-                case '-' -> 16;
-                default -> 17;
-            };
+                case 'A':
+                case 'a':
+                    return 10;
+                case 'B':
+                case 'b':
+                    return 11;
+                case 'C':
+                case 'c':
+                    return 12;
+                case 'D':
+                case 'd':
+                    return 13;
+                case 'E':
+                case 'e':
+                    return 14;
+                case 'F':
+                case 'f':
+                    return 15;
+                case '-':
+                    return 16;
+                default:
+                    return 17;
+            }
         }
 
         /**
