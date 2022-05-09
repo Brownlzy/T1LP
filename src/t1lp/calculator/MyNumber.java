@@ -141,7 +141,11 @@ public class MyNumber {
             number = "-" + number;
         }
     }
-
+/**
+ *追加输入
+ * @author Brownlzy
+ * @param n 新加的字符
+ */
     public void append(String n) {
         if (number.equals("0")) {
             if (n.equals("."))
