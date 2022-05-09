@@ -1,8 +1,8 @@
 package t1lp.ui;
 
-import t1lp.data.Config;
-import t1lp.data.Data;
-import t1lp.operator.InputProcess;
+import t1lp.handle.Config;
+import t1lp.handle.Data;
+import t1lp.handle.InputProcess;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

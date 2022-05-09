@@ -1,6 +1,6 @@
 package t1lp.ui;
 
-import t1lp.data.Config;
+import t1lp.handle.Config;
 
 import javax.swing.*;
 import java.awt.*;

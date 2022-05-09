@@ -1,16 +1,24 @@
-package t1lp.operator;
+package t1lp.handle;
 
 import t1lp.calculator.Calculate;
 import t1lp.calculator.MyNumber;
-import t1lp.data.Config;
-import t1lp.data.Data;
 import t1lp.ui.MainWindow;
 
 import java.util.Objects;
 
+/**
+ * 处理来自用户的输入
+ * @author Brownlzy
+ * @version 1.0
+ */
 public class InputProcess {
-
+    /**
+     * 处理字符输入
+     * @author Brownlzy
+     * @param input 输入的字符（命令）
+     */
     public static void dealInsert(String input) {
+        //判断计算器当前状态
         if (!(Data.isOpen && !Data.isError)) {
             if (Config.isDebug) System.out.println("由于计算器未开机或出现错误，不予处理。");
             return;
@@ -18,16 +26,18 @@ public class InputProcess {
         String sOCT = "89AbCdEF.";
         String sDEC = "AbCdEF";
         String sHEX = ".";
-        if (Data.ledNumber.getScale() == 8 && sOCT.contains(input) ||
-                Data.ledNumber.getScale() == 10 && sDEC.contains(input) ||
-                Data.ledNumber.getScale() == 16 && sHEX.contains(input) ||
-                input.equals(".") && Data.ledNumber.contains(".") ||
-                Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 ||
-                !Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 ||
-                Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 ||
-                !Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8) {
+        if (Data.ledNumber.getScale() == 8 && sOCT.contains(input)
+                || Data.ledNumber.getScale() == 10 && sDEC.contains(input)
+                || Data.ledNumber.getScale() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
+                || input.equals(".") && Data.ledNumber.contains(".") //第二次输入小数点
+                || Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
+                || !Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
+                || Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
+                || !Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8 //不含有-和.长度不超过8
+        ) {
             if (Config.isDebug) System.out.println("未满足输入限制条件，ledNumber未改变");
         } else {
+            //满足输入调件
             if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
                 if (Config.isDebug)
                     System.out.println("[InputProgress][dealInsert]" + Data.formula.get(Data.formula.size() - 1));
@@ -39,7 +49,11 @@ public class InputProcess {
             setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
         }
     }
-
+    /**
+     * 处理命令输入
+     * @author Brownlzy
+     * @param actionCommand 按下的命令按钮
+     */
     public static void dealCommand(String actionCommand) {
         if (!(actionCommand.equals("ON/C") || actionCommand.equals("OFF") || Data.isOpen && !Data.isError || Data.isOpen && actionCommand.equals("CE"))) {
             if (Config.isDebug) System.out.println("由于计算器未开机或出现错误，不予处理。");
@@ -167,7 +181,11 @@ public class InputProcess {
     public static void addNumberToFormula() {
         if (Data.isNextNum) Data.formula.add(Data.ledNumber.toString());
     }
-
+    /**
+    * This is description of method
+    * @author Brownlzy
+    * @param operator 输入的运算符
+    */
     public static void addOperatorToFormula(String operator) {
         if (Data.isNextNum) {
             if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
@@ -205,5 +223,39 @@ public class InputProcess {
         Data.ui.setLedNumber(myNumber.toString());
         Data.ui.setLedState(isError);
         Data.ui.setPower(isOpen);
+    }
+
+    /**
+     * 格式化数字字符串，使其适合LCD显示屏
+     * @param strLedNumber 待处理的字符串
+     * @return java.lang.String
+     * @author Brownlzy
+     */
+    private static String formatNumber(String strLedNumber) {
+        String strNum = "";
+        String n = strLedNumber.substring(5);
+        boolean isNegative = n.contains("-");
+        boolean isDouble = n.contains(".");
+        if (isNegative) {
+            n = n.substring(1);
+            //strNum=strNum+'-';
+        }
+        if (!isDouble) {
+            n = n + ".";
+        }
+        String pureNum = n.replace("-", "").replace(".", "");
+
+        int dotIndex = n.split("\\.")[0].length();
+        if (dotIndex == 8) {
+            strNum = strNum + n.split("\\.")[0];
+        } else if (dotIndex < 8) {
+            if (isDouble)
+                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
+            else
+                strNum = strNum + n.split("\\.")[0];
+        } else if (dotIndex > 8) {
+            strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
+        }
+        return strNum;
     }
 }
