@@ -1,4 +1,4 @@
-package t1lp.data;
+package t1lp.handle;
 
 /**
  * 配置类，存储程序设置

@@ -1,6 +1,6 @@
 package t1lp.calculator;
 
-import t1lp.data.Config;
+import t1lp.handle.Config;
 
 public class MyNumber {
     private String number;
