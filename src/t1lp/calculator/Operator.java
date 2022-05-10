@@ -107,3 +107,13 @@ class Xor extends Operator{
         }
     }
 }
+
+class Shf extends Operator{
+
+    public Shf(MyNumber x, MyNumber y){super(x,y);}
+
+
+    protected void doCalculate(){
+
+    }
+}
