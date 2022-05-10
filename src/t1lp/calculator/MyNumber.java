@@ -63,6 +63,9 @@ public class MyNumber {
                     number = myNumber.substring(5).split("\\.")[0];
                     //number = String.valueOf(Long.valueOf(myNumber.substring(5), 16));
                     break;
+                case"0b":
+                    scale=2;
+                    number = myNumber.substring(5).split("\\.")[0];
                 default:
             }
         } else {
@@ -105,6 +108,15 @@ public class MyNumber {
                     System.out.println(binstr + "--" + binstr.length());
                     return "NUM0x" + result;
                 }
+            case 2:
+                String binstr = Integer.toBinaryString(Integer.valueOf(number, scale));
+                if(binstr.length() != 32){
+                    for (int i = binstr.length(); i <32; i++) {
+                        binstr = "0"+binstr;
+                    }
+                }
+                Log("MyNumber", "toString(int s:" + s + ")", 2 + " " + binstr);
+                return"NUM0b" + binstr;
         }
         return null;
     }
@@ -207,4 +219,7 @@ public class MyNumber {
         number = Long.toString(~Long.parseLong(number, scale), scale);
     }
 }
+
+    /**public void getDRC(){
+    }*/
 
