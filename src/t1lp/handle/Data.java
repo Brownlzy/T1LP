@@ -6,6 +6,8 @@ import t1lp.ui.MainWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import static t1lp.handle.Config.Log;
+
 /**
  * 数据类，用于储存程序运行所需数据
  * @author Brownlzy
@@ -46,6 +48,7 @@ public class Data {
         isError = false;
         isNextNum=false;
         inState=0;
+        Log("Data","resetCalculator()","计算器已重置");
     }
 
 }

@@ -17,8 +17,10 @@ public class T1LcdProgrammer {
      */
     public static void dealWithArgs(String[] args) {
         //检查启动参数第一个是否为“/debug”，是则启用控制台输出。
-        if (Objects.equals(args[0], "/debug"))
+        if (args.length > 0 && Objects.equals(args[0], "/debug")) {
             Config.isDebug = true;
+            Log("T1LcdProgrammer", "main(" + args[0] + ")", "T1LcdProgrammer DEBUG Mode");
+        }
     }
 
     /**
@@ -28,8 +30,7 @@ public class T1LcdProgrammer {
      */
     public static void main(String[] args) {
         //处理启动参数
-        if (args.length > 0) dealWithArgs(args);
-        Log("T1LcdProgrammer","main("+args[0]+")","T1LcdProgrammer DEBUG Mode");
+        dealWithArgs(args);
         //程序初始化
         Data.init();
     }

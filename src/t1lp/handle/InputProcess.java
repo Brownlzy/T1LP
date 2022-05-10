@@ -223,13 +223,16 @@ public class InputProcess {
         switch (Data.inState) {  //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算,5:只能数字
             case 0:
             case 1:
-            case 3:
                 Data.inState = 2;
                 Data.formula.add(Data.ledNumber.toString());
                 Data.formula.add(operator);
                 break;
             case 2:
                 Data.formula.remove(Data.formula.size() - 1);
+                Data.formula.add(operator);
+                break;
+            case 3:
+                Data.inState = 2;
                 Data.formula.add(operator);
                 break;
             case 4:

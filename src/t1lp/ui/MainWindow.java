@@ -5,6 +5,8 @@ import t1lp.handle.Config;
 import javax.swing.*;
 import java.awt.*;
 
+import static t1lp.handle.Config.Log;
+
 /**
  * 计算器用户界面类
  * @author Brownlzy
@@ -22,7 +24,7 @@ public class MainWindow extends JFrame implements UI{
      */
     public void InitUi() {
         SwingUtilities.invokeLater(() -> {
-            if (Config.isDebug) System.out.println("[MainWindow]开始初始化GUI");
+            Log("MainWindow","InitUi()","开始初始化GUI");
 
             //创建计算器主窗体
             this.setTitle("T1LcdProgrammer");
@@ -62,7 +64,7 @@ public class MainWindow extends JFrame implements UI{
             //获得焦点
             this.requestFocusInWindow();
 
-            if (Config.isDebug) System.out.println("[MainWindow]GUI初始化完成。");
+            Log("MainWindow","InitUi()","GUI初始化完成。");
         });
     }
     /**
@@ -73,9 +75,8 @@ public class MainWindow extends JFrame implements UI{
      */
     @Override
     public void setLcdScreen(String ledNumber, boolean isError){
-            if (Config.isDebug) System.out.println("[MainWindow]Lcd显示屏修改内容为:" + ledNumber.substring(5));
+            Log("MainWindow","setLcdScreen(String ledNumber:"+ledNumber+", boolean isError:"+isError+")","Lcd显示屏修改内容为:" + ledNumber+(isError?" [E]":""));
             lcdScreen.changeLedNumber(ledNumber);
-            if (Config.isDebug) System.out.println("[MainWindow]Lcd状态显示屏修改为:错误：" + isError);
             lcdScreen.changeLedState(isError);
     }
     /**
@@ -86,12 +87,11 @@ public class MainWindow extends JFrame implements UI{
     @Override
     public void setPower(boolean isOpen) {
         if(isOpen) {
-            if (Config.isDebug) System.out.println("[MainWindow]计算器已开启");
             lcdScreen.showMe();
         }else{
-            if (Config.isDebug) System.out.println("[MainWindow]计算器已关闭");
             lcdScreen.hideMe();
         }
+        Log("MainWindow","setPower(boolean isOpen:"+isOpen+")","计算器"+(isOpen?"已开启":"已关闭"));
     }
     /**
      * 设置LED显示数字
@@ -100,7 +100,7 @@ public class MainWindow extends JFrame implements UI{
      */
     @Override
     public void setLedNumber(String number) {
-        if (Config.isDebug) System.out.println("[MainWindow]Lcd显示屏数字修改为:" + number);
+        Log("MainWindow","setLedNumber(String number:"+number+")","Lcd显示屏数字修改为:" + number);
         lcdScreen.changeLedNumber(number);
     }
     /**
@@ -110,7 +110,7 @@ public class MainWindow extends JFrame implements UI{
      */
     @Override
     public void setLedState(boolean isError) {
-        if (Config.isDebug) System.out.println("[MainWindow]Lcd状态显示屏修改为:错误：" + isError);
+        Log("MainWindow","setLedState(boolean isError:"+isError+")","Lcd状态显示屏修改为:错误：" + isError);
         lcdScreen.changeLedState(isError);
     }
 
