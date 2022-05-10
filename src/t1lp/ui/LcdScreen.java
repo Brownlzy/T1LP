@@ -91,41 +91,6 @@ class LcdScreen extends JPanel {
         }
     }
 
-    /*
-     * 格式化数字字符串，使其适合LCD显示屏
-     *
-     * @param strLedNumber 待处理的字符串
-     * @return java.lang.String
-     * @author Brownlzy
-     */
-/*    private String formatNumber(String strLedNumber) {
-        String strNum = "";
-        String n = strLedNumber.substring(5);
-        boolean isNegative = n.contains("-");
-        boolean isDouble = n.contains(".");
-        if (isNegative) {
-            n = n.substring(1);
-            //strNum=strNum+'-';
-        }
-        if (!isDouble) {
-            n = n + ".";
-        }
-        String pureNum = n.replace("-", "").replace(".", "");
-
-        int dotIndex = n.split("\\.")[0].length();
-        if (dotIndex == 8) {
-            strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex < 8) {
-            if (isDouble)
-                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
-            else
-                strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex > 8) {
-            strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
-        }
-        return strNum;
-    }
-*/
     /**
      * 判断数字字符串是否符号标准
      *
