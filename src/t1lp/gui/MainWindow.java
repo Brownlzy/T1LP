@@ -35,7 +35,8 @@ public class MainWindow extends JFrame {
             this.setLocationRelativeTo(null);
             //设置关闭窗口退出程序
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+            Image icon = Toolkit.getDefaultToolkit().getImage("res/icon.png");
+            this.setIconImage(icon);
             //设置键盘监听器
             Listener.KeyboardListener keyboardListener = new Listener.KeyboardListener();
             //设置容器Panel
