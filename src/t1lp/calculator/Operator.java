@@ -1,6 +1,7 @@
 package t1lp.calculator;
 
 abstract class Operator {
+    boolean judge=false;
     protected double X;
     protected double Y;
     protected double Z;
@@ -16,7 +17,10 @@ abstract class Operator {
     }
     protected abstract void doCalculate();
     public MyNumber getResult(){
-        return new MyNumber(Z);
+        if(judge==true)
+            return new MyNumber(Z);
+        else
+            return new MyNumber("NUM0b"+Zb);
     }
 }
 
@@ -29,6 +33,7 @@ class Add extends Operator{
     @Override
     protected void doCalculate() {
         Z=X+Y;
+        judge=true;
     }
 }
 
@@ -41,6 +46,7 @@ class Sub extends Operator{
     @Override
     protected void doCalculate() {
         Z=X-Y;
+        judge=true;
     }
 }
 
@@ -51,6 +57,7 @@ class Mul extends Operator{
     @Override
     protected void doCalculate() {
         Z=X*Y;
+        judge=true;
     }
 }
 
@@ -61,6 +68,7 @@ class Div extends Operator{
     @Override
     protected void doCalculate() {
         Z=X/Y;
+        judge=true;
     }
 }
 
