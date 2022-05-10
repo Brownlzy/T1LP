@@ -79,7 +79,7 @@ public class InputProcess {
                 default:
                     throw new RuntimeException("未知的inState");
             }
-            Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.formula:" + Data.formula+Data.ledNumber);
+            Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.formula:" + Data.formula + Data.ledNumber);
         }
     }
 
@@ -138,7 +138,7 @@ public class InputProcess {
                 }
                 break;
             case ")":
-                if (Data.inState == 1 ) {
+                if (Data.inState == 1) {
                     Data.inState = 3;
                     Data.formula.add(Data.ledNumber.toString());
                     Data.formula.add(")");
@@ -185,7 +185,7 @@ public class InputProcess {
                 break;
             case "=":
                 addOperatorToFormula("#");
-                Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula+Data.ledNumber);
+                Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula + Data.ledNumber);
 
                 Data.result = Calculate.doCalculate(Data.formula);
                 Data.result.setScale(Data.ledNumber.getScale());
@@ -193,8 +193,8 @@ public class InputProcess {
                 //Todo:多步运算,等待Caculate完成
 
                 // if(Calculate.isFinished)
-                    Data.inState=4;//计算完毕
-                    Data.formula.clear();
+                Data.inState = 4;//计算完毕
+                Data.formula.clear();
                 //else
                 //    Data.inState=6;//未计算完毕
                 //    Data.formula=Caculate.getFormula;
@@ -210,7 +210,7 @@ public class InputProcess {
             default:
                 throw new IllegalStateException("Unexpected value: " + actionCommand);
         }
-        Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula+Data.ledNumber);
+        Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula + Data.ledNumber);
     }
 
     /**
@@ -286,7 +286,7 @@ public class InputProcess {
                 strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
             else
                 strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex > 8) {
+        } else { //dotIndex > 8
             strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
         }
         return strNum;
