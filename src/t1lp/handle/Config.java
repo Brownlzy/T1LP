@@ -21,6 +21,6 @@ public class Config {
      */
     public static void Log(String sourceClass, String sourceMethod, String msg) {
         if (isDebug)
-            System.out.println(String.format("[ %-15s ]", sourceClass) + "\t" + String.format("[ %-55s ]", sourceMethod) + "\t\t" + msg);
+            System.out.println(String.format("[ %-16s ]", sourceClass) + "\t" + String.format("[ %-55s ]", sourceMethod) + "\t\t" + msg);
     }
 }

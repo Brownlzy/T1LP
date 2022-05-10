@@ -78,7 +78,7 @@ class Listener {
                 InputProcess.dealInsert(String.valueOf(e.getKeyChar()));
             } else if ("+-*/=".contains(String.valueOf(e.getKeyChar()))) { //加、减、乘、除、等于
                 InputProcess.dealCommand(String.valueOf(e.getKeyChar()));
-            } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {    //回车键
+            } else if (e.getKeyCode() == 0) {    //回车键
                 InputProcess.dealCommand("=");
             } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {   //退格键
                 InputProcess.dealCommand("BKS");
