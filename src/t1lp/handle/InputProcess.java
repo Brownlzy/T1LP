@@ -134,21 +134,19 @@ public class InputProcess {
                     Data.formula.add(")");
                 }
                 break;
-            case "SHF":
-
-                break;
             case "1'sC":
                 Data.ledNumber.setInverse();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "OR":
-                addOperatorToFormula("OR");
-                break;
             case "AND":
-                addOperatorToFormula("AND");
-                break;
             case "XOR":
-                addOperatorToFormula("XOR");
+            case "SHF":
+                if(Data.ledNumber.getScale()==10){  //10进制下不支持位运算！
+                    Log("InputProcess","dealCommand(String actionCommand:" + actionCommand + ")","10进制下不支持位运算！");
+                    return;
+                }
+                addOperatorToFormula(actionCommand);
                 break;
             case "CE":
                 Data.ledNumber.cleanEntry();
