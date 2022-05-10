@@ -165,6 +165,9 @@ public class MyNumber {
     public void backSpace(){
         //TODO:输入退格
     }
+    public void cleanEntry(){
+        number="0";
+    }
 
     public int length() {
         return number.length();
