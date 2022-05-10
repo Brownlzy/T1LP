@@ -162,8 +162,13 @@ public class MyNumber {
         }
     }
 
-    public void backSpace(){
-        //TODO:输入退格
+    public void backSpace() {
+        if (number.length() == 1) {
+            number = "0";
+        }
+        else{
+            number = number.substring(0, number.length() - 1);
+        }
     }
     public void cleanEntry(){
         number="0";
