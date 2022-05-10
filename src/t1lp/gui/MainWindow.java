@@ -1,4 +1,4 @@
-package t1lp.ui;
+package t1lp.gui;
 
 import javax.swing.*;
 import java.awt.*;

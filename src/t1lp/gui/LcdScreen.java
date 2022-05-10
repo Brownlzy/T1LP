@@ -1,4 +1,4 @@
-package t1lp.ui;
+package t1lp.gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -203,22 +203,46 @@ class LcdScreen extends JPanel {
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param scale   进制
+         * @param isError E标
+         * @author Brownlzy
+         */
         public void changeState(int scale, boolean isError) {
             this.isError = isError;
             this.scale = scale;
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param scale 进制
+         * @author Brownlzy
+         */
         public void changeState(int scale) {
             this.scale = scale;
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param isError E标
+         * @author Brownlzy
+         */
         public void changeState(boolean isError) {
             this.isError = isError;
             refreshText();
         }
 
+        /**
+         * 刷新LCD状态区显示文本
+         *
+         * @author Brownlzy
+         */
         private void refreshText() {
             String funText = " E              DEC      HEX      OCT ";
             if (!isError) funText = funText.replace(" E ", "   ");

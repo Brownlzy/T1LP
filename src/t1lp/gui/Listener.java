@@ -1,4 +1,4 @@
-package t1lp.ui;
+package t1lp.gui;
 
 import t1lp.handle.Data;
 import t1lp.handle.InputProcess;
