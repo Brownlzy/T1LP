@@ -195,7 +195,10 @@ public class MyNumber {
                 number = number.substring(0, number.length() - 1);
             }
         } else {
-            if (number.length() == 2) {
+            if(Objects.equals(number, "-0.")){
+                number = "0";
+            }
+            else if (number.length() == 2) {
                 number = "0";
             } else {
                 number = number.substring(0, number.length() - 1);
