@@ -151,9 +151,7 @@ public class InputProcess {
                 addOperatorToFormula("XOR");
                 break;
             case "CE":
-                //TODO:等待MyNumber完成
-
-                //Data.ledNumber.cleanEntry();
+                Data.ledNumber.cleanEntry();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "K":
@@ -196,7 +194,8 @@ public class InputProcess {
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "BKS":
-
+                Data.ledNumber.backSpace();
+                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             default:
                 throw new UnsupportedOperationException("Unexpected value: " + actionCommand);
