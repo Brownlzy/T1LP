@@ -339,6 +339,7 @@ class LcdScreen extends JPanel {
 
         /**
          * 字符转数组下标
+         *
          * @param c 字符
          * @return int
          * @author Brownlzy
