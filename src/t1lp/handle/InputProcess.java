@@ -5,22 +5,27 @@ import t1lp.calculator.MyNumber;
 import t1lp.ui.MainWindow;
 
 import java.util.Objects;
+import java.util.logging.Logger;
+
+import static t1lp.handle.Config.Log;
 
 /**
  * 处理来自用户的输入
+ *
  * @author Brownlzy
  * @version 1.0
  */
 public class InputProcess {
     /**
      * 处理字符输入
-     * @author Brownlzy
+     *
      * @param input 输入的字符（命令）
+     * @author Brownlzy
      */
     public static void dealInsert(String input) {
         //判断计算器当前状态
         if (!(Data.isOpen && !Data.isError)) {
-            if (Config.isDebug) System.out.println("由于计算器未开机或出现错误，不予处理。");
+            Log("InputProcess", "dealInsert(String input:" + input + ")", "由于计算器未开机或出现错误，不予处理。");
             return;
         }
         String sOCT = "89AbCdEF.";
@@ -35,10 +40,10 @@ public class InputProcess {
                 || Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
                 || !Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8 //不含有-和.长度不超过8
         ) {
-            if (Config.isDebug) System.out.println("未满足输入限制条件，ledNumber未改变");
+            Log("InputProcess", "dealInsert(String input:" + input + ")", "未满足输入限制条件，ledNumber未改变");
         } else {
             //满足输入调件
-            if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
+            /*if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
                 if (Config.isDebug)
                     System.out.println("[InputProgress][dealInsert]" + Data.formula.get(Data.formula.size() - 1));
                 Data.formula.clear();
@@ -46,19 +51,50 @@ public class InputProcess {
             }
             Data.ledNumber.append(input);
             Data.isNextNum = true;
-            setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+            setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);*/
+            Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.inState=" + Data.inState);
+            switch (Data.inState) {//0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算,5:等待输入数字,6:分步计算未算完
+                case 0:
+                case 2:
+                case 5:
+                    Data.inState = 1;
+                    Data.ledNumber.setNumber(0);
+                    Data.ledNumber.append(input);
+                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    break;
+                case 1:
+                    Data.ledNumber.append(input);
+                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    break;
+                case 3:
+                    break;
+                case 4:
+                case 6:
+                    Data.inState = 1;
+                    Data.formula.clear();
+                    Data.ledNumber.setNumber(0);
+                    Data.ledNumber.append(input);
+                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    break;
+                default:
+                    throw new RuntimeException("未知的inState");
+            }
+            Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.formula:" + Data.formula+Data.ledNumber);
         }
     }
+
     /**
      * 处理命令输入
-     * @author Brownlzy
+     *
      * @param actionCommand 按下的命令按钮
+     * @author Brownlzy
      */
     public static void dealCommand(String actionCommand) {
         if (!(actionCommand.equals("ON/C") || actionCommand.equals("OFF") || Data.isOpen && !Data.isError || Data.isOpen && actionCommand.equals("CE"))) {
-            if (Config.isDebug) System.out.println("由于计算器未开机或出现错误，不予处理。");
+            Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "由于计算器未开机或出现错误，不予处理。");
             return;
         }
+        Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.inState=" + Data.inState);
         MainWindow ui = Data.ui;
         switch (actionCommand) {
             case "HEX": {
@@ -77,8 +113,8 @@ public class InputProcess {
             }
             break;
             case "OFF":
-                Data.resetCalculator();
                 Data.isOpen = false;
+                Data.resetCalculator();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "ON/C":
@@ -96,10 +132,17 @@ public class InputProcess {
 
                 break;
             case "(":
-
+                if (Data.inState == 0 || Data.inState == 2 || Data.inState == 4) {
+                    Data.inState = 5;
+                    Data.formula.add("(");
+                }
                 break;
             case ")":
-
+                if (Data.inState == 1 ) {
+                    Data.inState = 3;
+                    Data.formula.add(Data.ledNumber.toString());
+                    Data.formula.add(")");
+                }
                 break;
             case "SHF":
 
@@ -109,22 +152,18 @@ public class InputProcess {
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "OR":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("OR");
                 break;
             case "AND":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("AND");
                 break;
             case "XOR":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("XOR");
                 break;
             case "CE":
-                Data.resetCalculator();
+                //Todo：等待MyNumber完成
+
+                //Data.ledNumber.cleanEntry();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "K":
@@ -132,37 +171,33 @@ public class InputProcess {
                 break;
             case "÷":
             case "/":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("DIV");
                 break;
             case "×":
             case "*":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("MUL");
                 break;
             case "-":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("SUB");
                 break;
             case "+":
-                //continueInput();
-                addNumberToFormula();
                 addOperatorToFormula("ADD");
                 break;
             case "=":
-                if (Config.isDebug) System.out.println("Data.formula:" + Data.formula);
-                addNumberToFormula();
                 addOperatorToFormula("#");
-                if (Config.isDebug) System.out.println("Data.formula:" + Data.formula);
+                Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula+Data.ledNumber);
+
                 Data.result = Calculate.doCalculate(Data.formula);
                 Data.result.setScale(Data.ledNumber.getScale());
-                Data.formula.clear();
-                Data.formula.add(Data.result.toString());
-                Data.formula.add("#");
                 Data.ledNumber = Data.result;
+                //Todo:多步运算,等待Caculate完成
+
+                // if(Calculate.isFinished)
+                    Data.inState=4;//计算完毕
+                    Data.formula.clear();
+                //else
+                //    Data.inState=6;//未计算完毕
+                //    Data.formula=Caculate.getFormula;
                 setLcdScreen(Data.result, Data.isOpen, Data.isError);
                 break;
             case "+/-":
@@ -175,64 +210,59 @@ public class InputProcess {
             default:
                 throw new IllegalStateException("Unexpected value: " + actionCommand);
         }
-        if (Config.isDebug) System.out.println("Data.formula:" + Data.formula);
+        Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula+Data.ledNumber);
     }
 
-    public static void addNumberToFormula() {
-        if (Data.isNextNum) Data.formula.add(Data.ledNumber.toString());
-    }
     /**
-    * This is description of method
-    * @author Brownlzy
-    * @param operator 输入的运算符
-    */
+     * 把运算符加入公式
+     *
+     * @param operator 输入的运算符
+     * @author Brownlzy
+     */
     public static void addOperatorToFormula(String operator) {
-        if (Data.isNextNum) {
-            if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
-                if (Config.isDebug)
-                    System.out.println("[InputProgress][continueInput]" + Data.formula.get(Data.formula.size() - 1));
-                Data.ledNumber.setNumber(Data.formula.get(0));
+        switch (Data.inState) {  //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算,5:只能数字
+            case 0:
+            case 1:
+            case 3:
+                Data.inState = 2;
+                Data.formula.add(Data.ledNumber.toString());
+                Data.formula.add(operator);
+                break;
+            case 2:
+                Data.formula.remove(Data.formula.size() - 1);
+                Data.formula.add(operator);
+                break;
+            case 4:
+                Data.inState = 2;
                 Data.formula.clear();
-            }
-            Data.formula.add(operator);
-            int scale = Data.ledNumber.getScale();
-            Data.ledNumber.setNumber(0);
-            Data.ledNumber.setScale(scale);
-            Data.isNextNum = false;
-        } else {
-        Data.formula.remove(Data.formula.size() - 1);
-            Data.formula.add(operator);
-            int scale = Data.ledNumber.getScale();
-            Data.ledNumber.setNumber(0);
-            Data.ledNumber.setScale(scale);
-            Data.isNextNum = false;
+                Data.formula.add(Data.result.toString());
+                Data.formula.add(operator);
+                break;
+            case 5:
+            case 6:
+                break;
+            default:
+                throw new RuntimeException("未知的inState");
         }
     }
 
     public static void setLcdScreen(MyNumber myNumber, boolean isOpen, boolean isError) {
-        //String s = "";
-        //try {
-            //s = myNumber.toStringL(8);
-        //} catch (IllegalStateException e) {
-            //Data.isError = true;
-            //Data.ui.setLcdScreen(e.getMessage(),true);
-        //}
-        //if(s.startsWith("ERR"))
-        //Data.t1lp.ui.refreshLcdScreen(s, scale, isOpen, Data.isError=true);
-        //else
-        Data.ui.setLedNumber(myNumber.toString());
+        String strNumber = myNumber.toString();
+        strNumber = formatNumber(strNumber);
+        Data.ui.setLedNumber(strNumber);
         Data.ui.setLedState(isError);
         Data.ui.setPower(isOpen);
     }
 
     /**
      * 格式化数字字符串，使其适合LCD显示屏
+     *
      * @param strLedNumber 待处理的字符串
      * @return java.lang.String
      * @author Brownlzy
      */
     private static String formatNumber(String strLedNumber) {
-        String strNum = "";
+        String strNum = strLedNumber.substring(0, 5);
         String n = strLedNumber.substring(5);
         boolean isNegative = n.contains("-");
         boolean isDouble = n.contains(".");

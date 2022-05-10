@@ -2,6 +2,8 @@ package t1lp.handle;
 
 import java.util.Objects;
 
+import static t1lp.handle.Config.Log;
+
 /**
  * 计算器主类
  * @author Brownlzy
@@ -27,7 +29,7 @@ public class T1LcdProgrammer {
     public static void main(String[] args) {
         //处理启动参数
         if (args.length > 0) dealWithArgs(args);
-        if (Config.isDebug) System.out.println("T1LcdProgrammer DEBUG Mode");
+        Log("T1LcdProgrammer","main("+args[0]+")","T1LcdProgrammer DEBUG Mode");
         //程序初始化
         Data.init();
     }

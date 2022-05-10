@@ -61,7 +61,7 @@ class LcdScreen extends JPanel {
         if (isMyNumber(strLedNumber)) { //是符合标准的数字
             int scale = getScale(strLedNumber);
             //使数字符合LED显示的宽度
-            String number = formatNumber(strLedNumber);
+            String number = strLedNumber.substring(5);
             //显示数字，宽度为9
             labNumber.setIcon(new ImageIcon(ledNumber.getLedImage(number, 9)));
             labFunction.changeState(scale);
@@ -91,14 +91,14 @@ class LcdScreen extends JPanel {
         }
     }
 
-    /**
+    /*
      * 格式化数字字符串，使其适合LCD显示屏
      *
      * @param strLedNumber 待处理的字符串
      * @return java.lang.String
      * @author Brownlzy
      */
-    private String formatNumber(String strLedNumber) {
+/*    private String formatNumber(String strLedNumber) {
         String strNum = "";
         String n = strLedNumber.substring(5);
         boolean isNegative = n.contains("-");
@@ -125,7 +125,7 @@ class LcdScreen extends JPanel {
         }
         return strNum;
     }
-
+*/
     /**
      * 判断数字字符串是否符号标准
      *

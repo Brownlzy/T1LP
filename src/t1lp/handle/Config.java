@@ -7,4 +7,17 @@ package t1lp.handle;
  */
 public class Config {
     public static boolean isDebug=false;
+    /**
+     * 统一调试输出方法
+     * import static t1lp.handle.Config.Log;
+     * 示例：Log("InputProcess","dealCommand(String actionCommand:"+actionCommand+")","由于计算器未开机或出现错误，不予处理。");
+     * @author Brownlzy
+     * @param sourceClass 源类名
+     * @param sourceMethod 源方法名
+     * @param msg 显示的消息
+     */
+    public static void Log(String sourceClass,String sourceMethod,String msg){
+        if(isDebug)
+            System.out.println("["+sourceClass+"]\t"+"["+sourceMethod+"]\t"+msg);
+    }
 }
