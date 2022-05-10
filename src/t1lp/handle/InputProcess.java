@@ -2,9 +2,6 @@ package t1lp.handle;
 
 import t1lp.calculator.Calculate;
 import t1lp.calculator.MyNumber;
-import t1lp.ui.MainWindow;
-
-import java.nio.BufferOverflowException;
 
 import static t1lp.handle.Config.Log;
 
@@ -83,12 +80,11 @@ public class InputProcess {
      * @author Brownlzy
      */
     public static void dealCommand(String actionCommand) {
-        if (!(actionCommand.equals("ON/C") || actionCommand.equals("OFF") || Data.isOpen && !Data.isError || Data.isOpen && actionCommand.equals("CE"))) {
+        if (!(actionCommand.equals("ON/C") || actionCommand.equals("OFF") || Data.isOpen && !Data.isError)) {
             Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "由于计算器未开机或出现错误，不予处理。");
             return;
         }
         Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.inState=" + Data.inState);
-        MainWindow ui = Data.ui;
         switch (actionCommand) {
             case "HEX": {
                 Data.ledNumber.setScale(16);
@@ -155,7 +151,7 @@ public class InputProcess {
                 addOperatorToFormula("XOR");
                 break;
             case "CE":
-                //Todo：等待MyNumber完成
+                //TODO:等待MyNumber完成
 
                 //Data.ledNumber.cleanEntry();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
@@ -184,14 +180,14 @@ public class InputProcess {
                 Data.result = Calculate.doCalculate(Data.formula);
                 Data.result.setScale(Data.ledNumber.getScale());
 
-                //Todo:多步运算,等待Caculate完成
+                //TODO:多步运算,等待Calculate完成
 
                 // if(Calculate.isFinished)
                 Data.inState = 4;//计算完毕
                 Data.formula.clear();
                 //else
                 //    Data.inState=6;//未计算完毕
-                //    Data.formula=Caculate.getFormula;
+                //    Data.formula=Calculate.getFormula;
                 setLcdScreen(Data.result, Data.isOpen, Data.isError);
                 Data.ledNumber = Data.result;
                 break;
@@ -244,9 +240,16 @@ public class InputProcess {
         }
     }
 
+    /**
+     * 设置显示屏显示内容
+     *
+     * @param myNumber 需要在LCD屏幕上显示的数字
+     * @param isOpen   计算器电源状态
+     * @param isError  是否显示E标
+     * @author Brownlzy
+     */
     public static void setLcdScreen(MyNumber myNumber, boolean isOpen, boolean isError) {
         String strNumber = myNumber.toString();
-        //if (myNumber != Data.ledNumber) {//是当前ledNumber则不需要格式化
         try {
             strNumber = formatNumber(strNumber);
         } catch (RuntimeException e) //检查溢出错误
@@ -255,7 +258,6 @@ public class InputProcess {
             Data.isError = true;
             isError = true;
         }
-        //}
         Data.ui.setLedNumber(strNumber);
         Data.ui.setLedState(isError);
         Data.ui.setPower(isOpen);
@@ -281,20 +283,18 @@ public class InputProcess {
         if (!isDouble) {
             n = n + ".";
         }
-        String pureNum = n.replace("-", "").replace(".", "");
-
         int dotIndex = n.split("\\.")[0].length();
-        if (dotIndex == 1 && n.contains("E") && isDouble) {
-            strNum = strNum + n.substring(0, Integer.min(n.length() - 1, 7) - n.split("E")[1].length()) + "E" + n.split("E")[1];
+        if (dotIndex == 1 && n.contains("E") && isDouble) { //如果传入的是科学计数法
+            strNum = strNum + n.substring(0, Integer.min(n.length() - 1, 8) - n.split("E")[1].length()) + "E" + n.split("E")[1];
             throw new RuntimeException(strNum);
-        } else if (dotIndex == 8) {
+        } else if (dotIndex == 8) { //整数位数等于8
             strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex < 8) {
+        } else if (dotIndex < 8) {  //整数位数小于8
             if (isDouble)
                 strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex + 1, Integer.min(9, n.length()));
             else
                 strNum = strNum + n.split("\\.")[0];
-        } else { //dotIndex > 8
+        } else { //dotIndex > 8 //整数位数大于8
             strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
             throw new RuntimeException(strNum);
         }

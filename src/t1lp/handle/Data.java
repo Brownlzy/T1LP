@@ -1,7 +1,7 @@
 package t1lp.handle;
 
 import t1lp.calculator.MyNumber;
-import t1lp.ui.MainWindow;
+import t1lp.gui.MainWindow;
 
 import java.util.ArrayList;
 import java.util.List;
