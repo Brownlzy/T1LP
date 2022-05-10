@@ -75,16 +75,14 @@ public class MyNumber {
     }
 
     public String toString(int s) {
+        Log("MyNumber", "toString(int s:" + s + ")", scale + " " + number);
         if (s != scale)
             setScale(s);
         switch (scale) {
             case 10:
-                if (Config.isDebug) System.out.println("[MyNumber][toString(" + s + ")]" + "NUM0d" + number);
                 return "NUM0d" + number;
             case 8:
                 if (isPositive()) {
-                    if (Config.isDebug)
-                        System.out.println("[MyNumber][toString(" + s + ")]" + "NUM0o" + number.split("\\.")[0]);
                     return "NUM0o" + Long.toString(Long.valueOf(number.split("\\.")[0], scale), s);
                 } else {
                     String binstr = Integer.toBinaryString(Integer.valueOf(number, 8));
@@ -97,8 +95,6 @@ public class MyNumber {
                 }
             case 16:
                 if (isPositive()) {
-                    if (Config.isDebug)
-                        System.out.println("[MyNumber][toString(" + s + ")]" + "NUM0x" + number.split("\\.")[0]);
                     return "NUM0x" + Long.toString(Long.valueOf(number.split("\\.")[0], scale), s);
                 } else {
                     String binstr = Integer.toBinaryString(Integer.valueOf(number, 16));
@@ -148,8 +144,8 @@ public class MyNumber {
     }
 
     public void changeSign() {
-        if (Objects.equals(number, "0")) {
-            return;
+        if (Objects.equals(number, "0") || Objects.equals(number, "0.")) {
+            number = "0";
         } else if (number.startsWith("-")) {
             number = number.substring(1);
         } else {
@@ -211,3 +207,4 @@ public class MyNumber {
         number = Long.toString(~Long.parseLong(number, scale), scale);
     }
 }
+
