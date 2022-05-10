@@ -61,7 +61,7 @@ class LcdScreen extends JPanel {
         if (isMyNumber(strLedNumber)) { //是符合标准的数字
             int scale = getScale(strLedNumber);
             //使数字符合LED显示的宽度
-            String number = formatNumber(strLedNumber);
+            String number = strLedNumber.substring(5);
             //显示数字，宽度为9
             labNumber.setIcon(new ImageIcon(ledNumber.getLedImage(number, 9)));
             labFunction.changeState(scale);
@@ -89,41 +89,6 @@ class LcdScreen extends JPanel {
             default:
                 throw new UnsupportedOperationException();
         }
-    }
-
-    /**
-     * 格式化数字字符串，使其适合LCD显示屏
-     *
-     * @param strLedNumber 待处理的字符串
-     * @return java.lang.String
-     * @author Brownlzy
-     */
-    private String formatNumber(String strLedNumber) {
-        String strNum = "";
-        String n = strLedNumber.substring(5);
-        boolean isNegative = n.contains("-");
-        boolean isDouble = n.contains(".");
-        if (isNegative) {
-            n = n.substring(1);
-            //strNum=strNum+'-';
-        }
-        if (!isDouble) {
-            n = n + ".";
-        }
-        String pureNum = n.replace("-", "").replace(".", "");
-
-        int dotIndex = n.split("\\.")[0].length();
-        if (dotIndex == 8) {
-            strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex < 8) {
-            if (isDouble)
-                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
-            else
-                strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex > 8) {
-            strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
-        }
-        return strNum;
     }
 
     /**

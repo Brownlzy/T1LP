@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import static t1lp.handle.Config.Log;
+
 /**
  * 输入监听器类
  * @author Brownlzy
@@ -24,7 +26,7 @@ class Listener {
         @Override
         public void actionPerformed(ActionEvent e) {
             //e.getActionCommand()为按下按钮的标题
-            if (Config.isDebug) System.out.println("[CommandListener]按钮（cmd）" + e.getActionCommand() + "被按下");
+            Log("CommandListener","actionPerformed(ActionEvent e:"+e.getActionCommand()+")","按钮（cmd）" + e.getActionCommand() + "被按下");
             //交由InputProcess处理
             InputProcess.dealCommand(e.getActionCommand());
             //使焦点处于主窗口上，接受下一个键盘输入
