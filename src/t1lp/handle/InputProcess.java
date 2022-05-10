@@ -4,8 +4,7 @@ import t1lp.calculator.Calculate;
 import t1lp.calculator.MyNumber;
 import t1lp.ui.MainWindow;
 
-import java.util.Objects;
-import java.util.logging.Logger;
+import java.nio.BufferOverflowException;
 
 import static t1lp.handle.Config.Log;
 
@@ -43,22 +42,15 @@ public class InputProcess {
             Log("InputProcess", "dealInsert(String input:" + input + ")", "未满足输入限制条件，ledNumber未改变");
         } else {
             //满足输入调件
-            /*if (Data.formula.size() == 2 && Objects.equals(Data.formula.get(Data.formula.size() - 1), "#")) {
-                if (Config.isDebug)
-                    System.out.println("[InputProgress][dealInsert]" + Data.formula.get(Data.formula.size() - 1));
-                Data.formula.clear();
-                Data.ledNumber.setNumber(0);
-            }
-            Data.ledNumber.append(input);
-            Data.isNextNum = true;
-            setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);*/
             Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.inState=" + Data.inState);
-            switch (Data.inState) {//0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算,5:等待输入数字,6:分步计算未算完
+            int tmpScale = Data.ledNumber.getScale();
+            switch (Data.inState) { //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
                 case 0:
                 case 2:
                 case 5:
                     Data.inState = 1;
                     Data.ledNumber.setNumber(0);
+                    Data.ledNumber.setScale(tmpScale);
                     Data.ledNumber.append(input);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
@@ -73,11 +65,12 @@ public class InputProcess {
                     Data.inState = 1;
                     Data.formula.clear();
                     Data.ledNumber.setNumber(0);
+                    Data.ledNumber.setScale(tmpScale);
                     Data.ledNumber.append(input);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
                 default:
-                    throw new RuntimeException("未知的inState");
+                    throw new UnsupportedOperationException("未知的inState");
             }
             Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.formula:" + Data.formula + Data.ledNumber);
         }
@@ -131,6 +124,7 @@ public class InputProcess {
             case "SUM":
 
                 break;
+            //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
             case "(":
                 if (Data.inState == 0 || Data.inState == 2 || Data.inState == 4) {
                     Data.inState = 5;
@@ -189,7 +183,7 @@ public class InputProcess {
 
                 Data.result = Calculate.doCalculate(Data.formula);
                 Data.result.setScale(Data.ledNumber.getScale());
-                Data.ledNumber = Data.result;
+
                 //Todo:多步运算,等待Caculate完成
 
                 // if(Calculate.isFinished)
@@ -199,6 +193,7 @@ public class InputProcess {
                 //    Data.inState=6;//未计算完毕
                 //    Data.formula=Caculate.getFormula;
                 setLcdScreen(Data.result, Data.isOpen, Data.isError);
+                Data.ledNumber = Data.result;
                 break;
             case "+/-":
                 Data.ledNumber.changeSign();
@@ -208,7 +203,7 @@ public class InputProcess {
 
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + actionCommand);
+                throw new UnsupportedOperationException("Unexpected value: " + actionCommand);
         }
         Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula + Data.ledNumber);
     }
@@ -220,7 +215,7 @@ public class InputProcess {
      * @author Brownlzy
      */
     public static void addOperatorToFormula(String operator) {
-        switch (Data.inState) {  //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算,5:只能数字
+        switch (Data.inState) { //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
             case 0:
             case 1:
                 Data.inState = 2;
@@ -245,13 +240,22 @@ public class InputProcess {
             case 6:
                 break;
             default:
-                throw new RuntimeException("未知的inState");
+                throw new UnsupportedOperationException("未知的inState");
         }
     }
 
     public static void setLcdScreen(MyNumber myNumber, boolean isOpen, boolean isError) {
         String strNumber = myNumber.toString();
-        strNumber = formatNumber(strNumber);
+        //if (myNumber != Data.ledNumber) {//是当前ledNumber则不需要格式化
+        try {
+            strNumber = formatNumber(strNumber);
+        } catch (RuntimeException e) //检查溢出错误
+        {
+            strNumber = e.getMessage();
+            Data.isError = true;
+            isError = true;
+        }
+        //}
         Data.ui.setLedNumber(strNumber);
         Data.ui.setLedState(isError);
         Data.ui.setPower(isOpen);
@@ -265,13 +269,14 @@ public class InputProcess {
      * @author Brownlzy
      */
     private static String formatNumber(String strLedNumber) {
+        Log("InputProcess", "formatNumber(String strLedNumber:" + strLedNumber + ")", "格式化之前：" + strLedNumber);
         String strNum = strLedNumber.substring(0, 5);
         String n = strLedNumber.substring(5);
         boolean isNegative = n.contains("-");
         boolean isDouble = n.contains(".");
         if (isNegative) {
             n = n.substring(1);
-            //strNum=strNum+'-';
+            strNum = strNum + '-';
         }
         if (!isDouble) {
             n = n + ".";
@@ -279,16 +284,21 @@ public class InputProcess {
         String pureNum = n.replace("-", "").replace(".", "");
 
         int dotIndex = n.split("\\.")[0].length();
-        if (dotIndex == 8) {
+        if (dotIndex == 1 && n.contains("E") && isDouble) {
+            strNum = strNum + n.substring(0, Integer.min(n.length() - 1, 7) - n.split("E")[1].length()) + "E" + n.split("E")[1];
+            throw new RuntimeException(strNum);
+        } else if (dotIndex == 8) {
             strNum = strNum + n.split("\\.")[0];
         } else if (dotIndex < 8) {
             if (isDouble)
-                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
+                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex + 1, Integer.min(9, n.length()));
             else
                 strNum = strNum + n.split("\\.")[0];
         } else { //dotIndex > 8
             strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
+            throw new RuntimeException(strNum);
         }
+        Log("InputProcess", "formatNumber(String strLedNumber:" + strLedNumber + ")", "格式化之后：" + strNum);
         return strNum;
     }
 }

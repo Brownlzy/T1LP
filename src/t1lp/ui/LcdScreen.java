@@ -103,19 +103,19 @@ class LcdScreen extends JPanel {
             switch (strLedNumber.charAt(4)) {
                 case 'd':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"-0123456789.".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"-0123456789.E".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
                 case 'x':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"0123456789ABCDEFabcdef".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"0123456789ABCDEFabcdef.".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
                 case 'o':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"01234567".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"01234567E.".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
