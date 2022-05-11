@@ -228,36 +228,46 @@ public class MyNumber {
     }
 
     public void toDRC() {
+        if(!isPositive()) {
+            if (scale == 10) {
+                number = toString(2);
+                setNumber(number);
+                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < number.length(); i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+                result = new StringBuilder(toString(10));
+                setNumber(result.toString());
+                number = result.toString();
+            } else if (scale == 16) {
+                number = toString(2);
+                setNumber(number);
+                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < number.length(); i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+                result = new StringBuilder(toString(16));
+                setNumber(result.toString());
+                number = result.toString();
+            } else {
+                number = toString(2);
+                setNumber(number);
+                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < number.length(); i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+                result = new StringBuilder(toString(8));
+                setNumber(result.toString());
+                number = result.toString();
+            }
+        }else{
+        }
+    }
+    public void toComplement(){
         if (scale == 10) {
-            number = toString(2);
-            setNumber(number);
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < number.length(); i++) {
-                result.append(1 - (int) number.charAt(i));
-            }
-            result = new StringBuilder(toString(10));
-            setNumber(result.toString());
-            number = result.toString();
-        } else if (scale == 16) {
-            number = toString(2);
-            setNumber(number);
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < number.length(); i++) {
-                result.append(1 - (int) number.charAt(i));
-            }
-            result = new StringBuilder(toString(16));
-            setNumber(result.toString());
-            number = result.toString();
-        } else {
-            number = toString(2);
-            setNumber(number);
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < number.length(); i++) {
-                result.append(1 - (int) number.charAt(i));
-            }
-            result = new StringBuilder(toString(8));
-            setNumber(result.toString());
-            number = result.toString();
+            changeSign();
+        }else if(scale == 16){
+
         }
     }
 }
