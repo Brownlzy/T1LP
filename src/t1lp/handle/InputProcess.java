@@ -140,7 +140,7 @@ public class InputProcess {
                 }
                 break;
             case "1'sC":
-                Data.ledNumber.setInverse();
+                Data.ledNumber.toNOT();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "OR":
@@ -209,7 +209,10 @@ public class InputProcess {
 
                 break;
             case "+/-":
-                Data.ledNumber.changeSign();
+                if(Data.ledNumber.getScale()==10)
+                    Data.ledNumber.changeSign();
+                else
+                    Data.ledNumber.toNOT2();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "BKS":
