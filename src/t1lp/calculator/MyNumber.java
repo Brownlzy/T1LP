@@ -24,7 +24,6 @@ public class MyNumber {
     }
 
     public void setNumber(double num) {
-        if (Config.isDebug) System.out.println("[MyNumber][setNumber(num)]double num = " + num);
         number = String.valueOf(num);
         for (int i = number.length() - 1; i > 0; i--) {
             if (number.charAt(i) == '0') {
@@ -145,7 +144,6 @@ public class MyNumber {
     }
 
     public void setScale(int s) {
-        //ToDo:16进制有问题
         if (s == 10 && scale == 10) return;
         number = Long.toString(Long.valueOf(number.split("\\.")[0], scale), s);
         scale = s;
@@ -195,10 +193,9 @@ public class MyNumber {
                 number = number.substring(0, number.length() - 1);
             }
         } else {
-            if(Objects.equals(number, "-0.")){
+            if (Objects.equals(number, "-0.")) {
                 number = "0";
-            }
-            else if (number.length() == 2) {
+            } else if (number.length() == 2) {
                 number = "0";
             } else {
                 number = number.substring(0, number.length() - 1);
@@ -229,10 +226,39 @@ public class MyNumber {
         System.out.println(Long.parseLong(number, scale) + "---" + ~Long.parseLong(number, scale));
         number = Long.toString(~Long.parseLong(number, scale), scale);
     }
-}
 
-/**
- * public void getDRC(){
- * }
- */
+    public void toDRC() {
+        if (scale == 10) {
+            number = toString(2);
+            setNumber(number);
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < number.length(); i++) {
+                result.append(1 - (int) number.charAt(i));
+            }
+            result = new StringBuilder(toString(10));
+            setNumber(result.toString());
+            number = result.toString();
+        } else if (scale == 16) {
+            number = toString(2);
+            setNumber(number);
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < number.length(); i++) {
+                result.append(1 - (int) number.charAt(i));
+            }
+            result = new StringBuilder(toString(16));
+            setNumber(result.toString());
+            number = result.toString();
+        } else {
+            number = toString(2);
+            setNumber(number);
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < number.length(); i++) {
+                result.append(1 - (int) number.charAt(i));
+            }
+            result = new StringBuilder(toString(8));
+            setNumber(result.toString());
+            number = result.toString();
+        }
+    }
+}
 
