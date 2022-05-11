@@ -2,10 +2,88 @@ package t1lp.calculator;
 
 import java.util.*;
 
+import static t1lp.handle.Config.Log;
+
 public class Calculate {
+    private List<String> myFormula;
     private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV","OR","AND","XOR");
-    private static List<String> suffix =new ArrayList<>();
-    public static MyNumber doCalculate(List<String>formula) {
+    private List<String> suffix =new ArrayList<>();
+    public Calculate(){
+        myFormula=Arrays.asList("NUM0d0","#");
+    }
+    public Calculate(List<String> list) {
+        myFormula=list;
+    }
+
+    public void setFormula(List<String> list){
+        myFormula= list;
+    }
+
+    public MyNumber doCalculate(){
+        int[] priorityArr =new int[myFormula.size()];
+//        括号优先级
+        int p=0;
+        String flag="(";
+        for (int i = 0; i < myFormula.size()-1; i++) {
+//            不是括号的优先级为-1
+            Log("","",myFormula.get(i));
+            if(!Objects.equals(myFormula.get(i), "(") && !Objects.equals(myFormula.get(i), ")"))
+                priorityArr[i]=-1;
+//            若识别到的括号和上一个括号相同并且都是左括号，优先级+1
+            else if(myFormula.get(i).equals(flag)&& flag.equals("(")) {
+                priorityArr[i]=++p;
+                flag= myFormula.get(i);
+            }
+//            若识别到的括号和上一个括号相同并且都是有括号，优先级-1
+            else if(myFormula.get(i).equals(flag)&& flag.equals(")")){
+                priorityArr[i]=--p;
+                flag= myFormula.get(i);
+            }
+//            若识别到的括号和上一个括号不同，优先级不变
+            else if(!myFormula.get(i).equals(flag)){
+                priorityArr[i]=p;
+                flag=myFormula.get(i);
+            }
+        }
+        priorityArr[myFormula.size()-1]=-2;
+//      寻找优先级最大的括号下标
+        int maxPriority=priorityArr[0];
+        int leftAimBlock=0;
+        int rightAimBlock=0;
+        for (int i = 1; i < priorityArr.length; i++) {
+            if(priorityArr[i]>maxPriority){
+                maxPriority=priorityArr[i];
+                leftAimBlock=i;
+            }
+        }
+        for (int i = 1; i < priorityArr.length; i++) {
+            if(priorityArr[i]==maxPriority&& i!=leftAimBlock)
+                rightAimBlock=i;
+        }
+//        优先级最大的括号之间的内容放到tempFormula中
+        List<String> tempFormula=new ArrayList<>();
+        for(int i=leftAimBlock+1;i<rightAimBlock;i++){
+            tempFormula.add(myFormula.get(i));
+        }
+        MyNumber result=doCalculate(tempFormula);
+        myFormula.set(leftAimBlock, String.valueOf(result));
+        for (int i=leftAimBlock+1,len=myFormula.size();i<=rightAimBlock;i++) {
+            myFormula.remove(i);
+            len--;
+            i--;
+        }
+        return result;
+    }
+    public boolean isFinished(){
+        if(myFormula.size()==2&&myFormula.get(1).equals("#"))
+            return true;
+        else
+            return false;
+    }
+    public List<String> getFormula(){
+        return myFormula;
+    }
+    private MyNumber doCalculate(List<String>formula) {
         suffix=doTransform(formula);
         return new MyNumber(calculate(suffix));
     }
