@@ -1,5 +1,6 @@
 package t1lp.handle;
 
+import t1lp.calculator.Calculate;
 import t1lp.calculator.MyNumber;
 import t1lp.gui.MainWindow;
 
@@ -20,6 +21,7 @@ public class Data {
     public static boolean isOpen = false;   //计算器是否打开
     public static MyNumber ledNumber; //计算器LED字符串
     public static List<String> formula = new ArrayList<>();   //已输入的计算式
+    public static Calculate calculate;  //负责计算的对象
     public static MyNumber result;    //计算结果
     public static boolean isError;  //计算器是否出错
     public static int inState;  //计算器当前状态
@@ -51,6 +53,7 @@ public class Data {
         result = new MyNumber(0);
         isError = false;
         inState = 0;
+        calculate=new Calculate();
         Log("Data", "resetCalculator()", "计算器已重置");
     }
 
