@@ -2,6 +2,8 @@ package t1lp.calculator;
 
 abstract class Operator {
     boolean judge=false;
+    char True = '1';
+    String str="00000000000000000000000000000000";
     protected double X;
     protected double Y;
     protected double Z;
@@ -78,7 +80,13 @@ class Or extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=(long)X|(long)Y;
+        for(int i=0;i<Yb.length();i++){
+            if(Xb.charAt(i)==True | Yb.charAt(i)==True)
+                Zb+="1";
+            else{
+                Zb+="0";
+            }
+        }
     }
 }
 
@@ -88,7 +96,13 @@ class And extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=(long)X&(long)Y;
+        for(int i=0;i<Yb.length();i++){
+            if(Xb.charAt(i)==True & Yb.charAt(i)==True)
+                Zb+="1";
+            else{
+                Zb+="0";
+            }
+        }
     }
 }
 
@@ -107,3 +121,27 @@ class Xor extends Operator{
         }
     }
 }
+
+class Shf extends Operator{
+
+    public Shf(MyNumber x, MyNumber y){super(x,y);}
+
+    @Override
+    protected void doCalculate(){
+        int change = (int)(Y);
+        if(change>0) {
+            String newStr=Xb+str;
+            for (int i = 0; i < Xb.length(); i++) {
+                Zb += newStr.charAt(i + change);
+            }
+        }
+        else{
+            String newStr=str+Xb;
+            for (int i = newStr.length()-Xb.length(); i < newStr.length(); i++) {
+                Zb+=newStr.charAt(i+change);
+            }
+        }
+
+    }
+}
+
