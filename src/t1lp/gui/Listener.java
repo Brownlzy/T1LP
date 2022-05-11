@@ -76,7 +76,7 @@ class Listener {
                     || e.getKeyChar() == '.'  //小数点
             ) {
                 InputProcess.dealInsert(String.valueOf(e.getKeyChar()));
-            } else if ("+-*/=".contains(String.valueOf(e.getKeyChar()))) { //加、减、乘、除、等于
+            } else if ("+-*/()=".contains(String.valueOf(e.getKeyChar()))) { //加、减、乘、除、括号、等于
                 InputProcess.dealCommand(String.valueOf(e.getKeyChar()));
             } else if (e.getKeyChar() == KeyEvent.VK_ENTER) {    //回车键
                 InputProcess.dealCommand("=");
