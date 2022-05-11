@@ -63,8 +63,8 @@ public class MyNumber {
                     number = myNumber.substring(5).split("\\.")[0];
                     //number = String.valueOf(Long.valueOf(myNumber.substring(5), 16));
                     break;
-                case"0b":
-                    scale=2;
+                case "0b":
+                    scale = 2;
                     number = myNumber.substring(5).split("\\.")[0];
                 default:
             }
@@ -110,13 +110,13 @@ public class MyNumber {
                 }
             case 2:
                 String binstr = Integer.toBinaryString(Integer.valueOf(number, scale));
-                if(binstr.length() != 32){
-                    for (int i = binstr.length(); i <32; i++) {
-                        binstr = "0"+binstr;
+                if (binstr.length() != 32) {
+                    for (int i = binstr.length(); i < 32; i++) {
+                        binstr = "0" + binstr;
                     }
                 }
                 Log("MyNumber", "toString(int s:" + s + ")", 2 + " " + binstr);
-                return"NUM0b" + binstr;
+                return "NUM0b" + binstr;
         }
         return null;
     }
@@ -188,10 +188,21 @@ public class MyNumber {
     }
 
     public void backSpace() {
-        if (number.length() == 1) {
-            number = "0";
+        if (isPositive()) {
+            if (number.length() == 1) {
+                number = "0";
+            } else {
+                number = number.substring(0, number.length() - 1);
+            }
         } else {
-            number = number.substring(0, number.length() - 1);
+            if(Objects.equals(number, "-0.")){
+                number = "0";
+            }
+            else if (number.length() == 2) {
+                number = "0";
+            } else {
+                number = number.substring(0, number.length() - 1);
+            }
         }
     }
 
@@ -220,6 +231,8 @@ public class MyNumber {
     }
 }
 
-    /**public void getDRC(){
-    }*/
+/**
+ * public void getDRC(){
+ * }
+ */
 
