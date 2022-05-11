@@ -6,94 +6,114 @@ import static t1lp.handle.Config.Log;
 
 public class Calculate {
     private List<String> myFormula;
-    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV","OR","AND","XOR");
-    private List<String> suffix =new ArrayList<>();
-    public Calculate(){
-        myFormula=Arrays.asList("NUM0d0","#");
+    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR");
+    private List<String> suffix = new ArrayList<>();
+
+    public Calculate() {
+        myFormula = Arrays.asList("NUM0d0", "#");
     }
+
     public Calculate(List<String> list) {
-        myFormula=list;
+        myFormula = list;
     }
 
-    public void setFormula(List<String> list){
-        myFormula= list;
+    public void setFormula(List<String> list) {
+        myFormula = list;
     }
 
-    public MyNumber doCalculate(){
-        int[] priorityArr =new int[myFormula.size()];
+    public MyNumber doCalculate() {
+        int[] priorityArr = new int[myFormula.size()];
 //        括号优先级
-        int p=0;
-        String flag="(";
-        for (int i = 0; i < myFormula.size()-1; i++) {
+        int p = 0;
+        String flag = "(";
+        for (int i = 0; i < myFormula.size() - 1; i++) {
 //            不是括号的优先级为-1
-            Log("","",myFormula.get(i));
-            if(!Objects.equals(myFormula.get(i), "(") && !Objects.equals(myFormula.get(i), ")"))
-                priorityArr[i]=-1;
+            Log("", "", myFormula.get(i));
+            if (!Objects.equals(myFormula.get(i), "(") && !Objects.equals(myFormula.get(i), ")"))
+                priorityArr[i] = -1;
 //            若识别到的括号和上一个括号相同并且都是左括号，优先级+1
-            else if(myFormula.get(i).equals(flag)&& flag.equals("(")) {
-                priorityArr[i]=++p;
-                flag= myFormula.get(i);
+            else if (myFormula.get(i).equals(flag) && flag.equals("(")) {
+                priorityArr[i] = ++p;
+                flag = myFormula.get(i);
             }
 //            若识别到的括号和上一个括号相同并且都是有括号，优先级-1
-            else if(myFormula.get(i).equals(flag)&& flag.equals(")")){
-                priorityArr[i]=--p;
-                flag= myFormula.get(i);
+            else if (myFormula.get(i).equals(flag) && flag.equals(")")) {
+                priorityArr[i] = --p;
+                flag = myFormula.get(i);
             }
 //            若识别到的括号和上一个括号不同，优先级不变
-            else if(!myFormula.get(i).equals(flag)){
-                priorityArr[i]=p;
-                flag=myFormula.get(i);
+            else if (!myFormula.get(i).equals(flag)) {
+                priorityArr[i] = p;
+                flag = myFormula.get(i);
             }
         }
-        priorityArr[myFormula.size()-1]=-2;
+        priorityArr[myFormula.size() - 1] = -2;
 //      寻找优先级最大的括号下标
-        int maxPriority=priorityArr[0];
-        int leftAimBlock=0;
-        int rightAimBlock=0;
-        for (int i = 1; i < priorityArr.length; i++) {
-            if(priorityArr[i]>maxPriority){
-                maxPriority=priorityArr[i];
-                leftAimBlock=i;
+        int maxPriority = -1;
+        int leftAimBlock = 0;
+        int rightAimBlock = 0;
+        for (int j : priorityArr) {
+            if (j > maxPriority) {
+                maxPriority = j;
             }
         }
-        for (int i = 1; i < priorityArr.length; i++) {
-            if(priorityArr[i]==maxPriority&& i!=leftAimBlock)
-                rightAimBlock=i;
+        for (int i = 0; i < priorityArr.length; i++) {
+            if (priorityArr[i] == maxPriority && myFormula.get(i).equals("(")) {
+                leftAimBlock = i;
+                break;
+            }
         }
+        for (int i = 0; i < priorityArr.length; i++) {
+            if (priorityArr[i] == maxPriority && myFormula.get(i).equals(")")) {
+                rightAimBlock = i;
+                break;
+            }
+        }
+        if (maxPriority != -1) {
 //        优先级最大的括号之间的内容放到tempFormula中
-        List<String> tempFormula=new ArrayList<>();
-        for(int i=leftAimBlock+1;i<rightAimBlock;i++){
-            tempFormula.add(myFormula.get(i));
+            List<String> tempFormula = new ArrayList<>();
+            for (int i = leftAimBlock + 1; i < rightAimBlock; i++) {
+                tempFormula.add(myFormula.get(i));
+            }
+            MyNumber result = doCalculate(tempFormula);
+            myFormula.set(leftAimBlock, String.valueOf(result));
+            for (int i = leftAimBlock + 1; i <= rightAimBlock; rightAimBlock--) {
+                myFormula.remove(i);
+            }
+            return result;
+        } else {
+            MyNumber result = doCalculate(myFormula);
+            myFormula = Arrays.asList(result.toString(), "#");
+            return result;
         }
-        MyNumber result=doCalculate(tempFormula);
-        myFormula.set(leftAimBlock, String.valueOf(result));
-        for (int i=leftAimBlock+1,len=myFormula.size();i<=rightAimBlock;i++) {
-            myFormula.remove(i);
-            len--;
-            i--;
-        }
-        return result;
     }
-    public boolean isFinished(){
-        if(myFormula.size()==2&&myFormula.get(1).equals("#"))
+
+    public boolean isFinished() {
+        if (myFormula.size() == 2 && myFormula.get(1).equals("#"))
             return true;
         else
             return false;
     }
-    public List<String> getFormula(){
+
+    public List<String> getFormula() {
         return myFormula;
     }
-    private MyNumber doCalculate(List<String>formula) {
-        suffix=doTransform(formula);
+
+    private MyNumber doCalculate(List<String> formula) {
+        Log("Calculate", "MyNumber doCalculate(List<String>formula:" + formula + ")", "");
+        suffix = doTransform(formula);
         return new MyNumber(calculate(suffix));
     }
+
     /**
      * 根据后缀表达式list计算结果
-     * @author Brownlzy
+     *
      * @param list 要计算的后缀表达式
      * @return String
+     * @author Brownlzy
      */
     private static String calculate(List<String> list) {
+        Log("Calculate", "String calculate(List<String> list:" + list + ")", "");
         Stack<String> stack = new Stack<>();
         for (String item : list) {
             if (isNumber(item)) {
@@ -134,16 +154,18 @@ public class Calculate {
         }
         return stack.pop();
     }
+
     /**
      * 中缀表达式转后缀表达式
-     * @author Brownlzy
+     *
      * @param infix 中缀表达式
      * @return java.util.List java.lang.String
+     * @author Brownlzy
      */
     private static List<String> doTransform(List<String> infix) {
 
-        Stack<String> operatorStack=new Stack<>();
-        List<String> suffix =new ArrayList<>();
+        Stack<String> operatorStack = new Stack<>();
+        List<String> suffix = new ArrayList<>();
 
         for (String item : infix) {
             //得到数或操作符
@@ -194,9 +216,10 @@ public class Calculate {
 
     /**
      * 判断字符串是否为操作符
-     * @author Brownlzy
-     * @return boolean
+     *
      * @param op 要判断的字符串
+     * @return boolean
+     * @author Brownlzy
      */
     public static boolean isOperator(String op) {
         return operator.contains(op);
@@ -204,9 +227,10 @@ public class Calculate {
 
     /**
      * 判断是否为数字
-     * @author Brownlzy
-     * @return boolean
+     *
      * @param num 要判断的字符串
+     * @return boolean
+     * @author Brownlzy
      */
     public static boolean isNumber(String num) {
         return num.startsWith("NUM");
@@ -214,9 +238,10 @@ public class Calculate {
 
     /**
      * 获取操作符的优先级
-     * @author Brownlzy
-     * @return boolean
+     *
      * @param op 要判断的字符串
+     * @return boolean
+     * @author Brownlzy
      */
     public static int priority(String op) {
         if (op.equals("MUL") || op.equals("DIV")) {

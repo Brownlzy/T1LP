@@ -142,8 +142,8 @@ public class InputProcess {
             case "AND":
             case "XOR":
             case "SHF":
-                if(Data.ledNumber.getScale()==10){  //10进制下不支持位运算！
-                    Log("InputProcess","dealCommand(String actionCommand:" + actionCommand + ")","10进制下不支持位运算！");
+                if (Data.ledNumber.getScale() == 10) {  //10进制下不支持位运算！
+                    Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "10进制下不支持位运算！");
                     return;
                 }
                 addOperatorToFormula(actionCommand);
@@ -172,31 +172,21 @@ public class InputProcess {
             case "=":
                 addOperatorToFormula("#");
                 Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula + Data.ledNumber);
-
-                Data.result = Calculate.doCalculate(Data.formula);
-                Data.result.setScale(Data.ledNumber.getScale());
-                Data.inState = 4;//计算完毕
-                Data.formula.clear();
-                setLcdScreen(Data.result, Data.isOpen, Data.isError);
-                Data.ledNumber = Data.result;
-
-                //TODO:多步运算,等待Calculate完成
-/*
-                if(Data.calculate.isFinished())
-                {
+                if (Data.calculate.isFinished()) {
                     Data.calculate.setFormula(Data.formula);
                 }
                 Data.result = Data.calculate.doCalculate();
                 Data.result.setScale(Data.ledNumber.getScale());
-                 if(Calculate.isFinished)
-                Data.inState = 4;//计算完毕
-                Data.formula.clear();
-                else
-                    Data.inState=6;//未计算完毕
-                    Data.formula=Data.calculate.getFormula;
+                if (Data.calculate.isFinished()) {
+                    Data.inState = 4;//计算完毕
+                    Data.formula.clear();
+                } else {
+                    Data.inState = 6;//未计算完毕
+                    Data.formula = Data.calculate.getFormula();
+                }
                 setLcdScreen(Data.result, Data.isOpen, Data.isError);
                 Data.ledNumber = Data.result;
-*/
+
                 break;
             case "+/-":
                 Data.ledNumber.changeSign();
