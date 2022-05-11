@@ -1,4 +1,4 @@
-package t1lp.ui;
+package t1lp.gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,7 +61,7 @@ class LcdScreen extends JPanel {
         if (isMyNumber(strLedNumber)) { //是符合标准的数字
             int scale = getScale(strLedNumber);
             //使数字符合LED显示的宽度
-            String number = formatNumber(strLedNumber);
+            String number = strLedNumber.substring(5);
             //显示数字，宽度为9
             labNumber.setIcon(new ImageIcon(ledNumber.getLedImage(number, 9)));
             labFunction.changeState(scale);
@@ -92,41 +92,6 @@ class LcdScreen extends JPanel {
     }
 
     /**
-     * 格式化数字字符串，使其适合LCD显示屏
-     *
-     * @param strLedNumber 待处理的字符串
-     * @return java.lang.String
-     * @author Brownlzy
-     */
-    private String formatNumber(String strLedNumber) {
-        String strNum = "";
-        String n = strLedNumber.substring(5);
-        boolean isNegative = n.contains("-");
-        boolean isDouble = n.contains(".");
-        if (isNegative) {
-            n = n.substring(1);
-            //strNum=strNum+'-';
-        }
-        if (!isDouble) {
-            n = n + ".";
-        }
-        String pureNum = n.replace("-", "").replace(".", "");
-
-        int dotIndex = n.split("\\.")[0].length();
-        if (dotIndex == 8) {
-            strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex < 8) {
-            if (isDouble)
-                strNum = strNum + n.split("\\.")[0] + '.' + n.substring(dotIndex, Integer.min(9, n.length()));
-            else
-                strNum = strNum + n.split("\\.")[0];
-        } else if (dotIndex > 8) {
-            strNum = strNum + n.charAt(0) + '.' + n.substring(2, 8 - String.valueOf(dotIndex - 1).length()) + 'E' + (dotIndex - 1);
-        }
-        return strNum;
-    }
-
-    /**
      * 判断数字字符串是否符号标准
      *
      * @param strLedNumber 数字（NUM0d123456789.0）
@@ -138,19 +103,19 @@ class LcdScreen extends JPanel {
             switch (strLedNumber.charAt(4)) {
                 case 'd':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"-0123456789.".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"-0123456789.E".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
                 case 'x':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"0123456789ABCDEFabcdef".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"0123456789ABCDEFabcdef.".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
                 case 'o':
                     for (int i = 5; i < strLedNumber.length(); i++) {
-                        if (!"01234567".contains(String.valueOf(strLedNumber.charAt(i))))
+                        if (!"01234567E.".contains(String.valueOf(strLedNumber.charAt(i))))
                             return false;
                     }
                     return true;
@@ -238,22 +203,46 @@ class LcdScreen extends JPanel {
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param scale   进制
+         * @param isError E标
+         * @author Brownlzy
+         */
         public void changeState(int scale, boolean isError) {
             this.isError = isError;
             this.scale = scale;
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param scale 进制
+         * @author Brownlzy
+         */
         public void changeState(int scale) {
             this.scale = scale;
             refreshText();
         }
 
+        /**
+         * 设置成员变量
+         *
+         * @param isError E标
+         * @author Brownlzy
+         */
         public void changeState(boolean isError) {
             this.isError = isError;
             refreshText();
         }
 
+        /**
+         * 刷新LCD状态区显示文本
+         *
+         * @author Brownlzy
+         */
         private void refreshText() {
             String funText = " E              DEC      HEX      OCT ";
             if (!isError) funText = funText.replace(" E ", "   ");
@@ -374,6 +363,7 @@ class LcdScreen extends JPanel {
 
         /**
          * 字符转数组下标
+         *
          * @param c 字符
          * @return int
          * @author Brownlzy

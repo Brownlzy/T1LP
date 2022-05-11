@@ -1,17 +1,28 @@
 package t1lp.calculator;
 
 abstract class Operator {
+    boolean judge=false;
+    char True = '1';
+    String str="00000000000000000000000000000000";
     protected double X;
     protected double Y;
     protected double Z;
+    protected String Xb;
+    protected String Yb;
+    protected String Zb="";
     public Operator(MyNumber x,MyNumber y){
         X=Double.parseDouble(x.toString(10).substring(5));
         Y=Double.parseDouble(y.toString(10).substring(5));
+        Xb=x.toString(2).substring(5);
+        Yb=y.toString(2).substring(5);
         doCalculate();
     }
     protected abstract void doCalculate();
     public MyNumber getResult(){
-        return new MyNumber(Z);
+        if(judge==true)
+            return new MyNumber(Z);
+        else
+            return new MyNumber("NUM0b"+Zb);
     }
 }
 
@@ -24,6 +35,7 @@ class Add extends Operator{
     @Override
     protected void doCalculate() {
         Z=X+Y;
+        judge=true;
     }
 }
 
@@ -36,6 +48,7 @@ class Sub extends Operator{
     @Override
     protected void doCalculate() {
         Z=X-Y;
+        judge=true;
     }
 }
 
@@ -46,6 +59,7 @@ class Mul extends Operator{
     @Override
     protected void doCalculate() {
         Z=X*Y;
+        judge=true;
     }
 }
 
@@ -56,6 +70,7 @@ class Div extends Operator{
     @Override
     protected void doCalculate() {
         Z=X/Y;
+        judge=true;
     }
 }
 
@@ -65,7 +80,13 @@ class Or extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=(long)X|(long)Y;
+        for(int i=0;i<Yb.length();i++){
+            if(Xb.charAt(i)==True | Yb.charAt(i)==True)
+                Zb+="1";
+            else{
+                Zb+="0";
+            }
+        }
     }
 }
 
@@ -75,7 +96,13 @@ class And extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=(long)X&(long)Y;
+        for(int i=0;i<Yb.length();i++){
+            if(Xb.charAt(i)==True & Yb.charAt(i)==True)
+                Zb+="1";
+            else{
+                Zb+="0";
+            }
+        }
     }
 }
 
@@ -85,6 +112,36 @@ class Xor extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=(long)X^(long)Y;
+        for(int i=0;i<Yb.length();i++){
+            if(Xb.charAt(i)==Yb.charAt(i))
+                Zb+="0";
+            else{
+                Zb+="1";
+            }
+        }
     }
 }
+
+class Shf extends Operator{
+
+    public Shf(MyNumber x, MyNumber y){super(x,y);}
+
+    @Override
+    protected void doCalculate(){
+        int change = (int)(Y);
+        if(change>0) {
+            String newStr=Xb+str;
+            for (int i = 0; i < Xb.length(); i++) {
+                Zb += newStr.charAt(i + change);
+            }
+        }
+        else{
+            String newStr=str+Xb;
+            for (int i = newStr.length()-Xb.length(); i < newStr.length(); i++) {
+                Zb+=newStr.charAt(i+change);
+            }
+        }
+
+    }
+}
+

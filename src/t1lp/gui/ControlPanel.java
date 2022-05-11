@@ -1,9 +1,11 @@
-package t1lp.ui;
+package t1lp.gui;
 
 import javax.swing.*;
 import java.awt.*;
+
 /**
  * 包含计算器所有按钮的面板
+ *
  * @author Brownlzy
  * @version 1.0
  */
@@ -19,8 +21,10 @@ class ControlPanel extends JPanel {
             "XOR", "1", "2", "3", "+",
             "CE", "0", ".", "+/-", "="
     };  //按钮标题数组
+
     /**
      * 构造函数，使用Windows风格UI
+     *
      * @author Brownlzy
      */
     public ControlPanel() {
@@ -34,8 +38,10 @@ class ControlPanel extends JPanel {
         }
         SwingUtilities.updateComponentTreeUI(ControlPanel.this);
     }
+
     /**
      * 初始化按钮面板
+     *
      * @author Brownlzy
      */
     public void initGUI() {
@@ -54,11 +60,11 @@ class ControlPanel extends JPanel {
             //设置每个按钮坐标
             ctrlButton[i].setBounds(82 * (i % 5), 71 * (i / 5), 60, 35);
             //分别设置对应监听器并设置字体
-            if (i >= 10 && i % 5 <= 3 && i % 5 >= 1 && i!=38) {
+            if (i >= 10 && i % 5 <= 3 && i % 5 >= 1 && i != 38) {
                 //输入键
                 ctrlButton[i].addActionListener(insertListener);
                 ctrlButton[i].setFont(new Font("Consolas", Font.BOLD, 22));
-            }else {
+            } else {
                 //命令键
                 ctrlButton[i].addActionListener(commandListener);
                 ctrlButton[i].setFont(new Font("Consolas", Font.BOLD, 13));
