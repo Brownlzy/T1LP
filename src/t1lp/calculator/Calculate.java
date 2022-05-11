@@ -3,7 +3,7 @@ package t1lp.calculator;
 import java.util.*;
 
 public class Calculate {
-    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV","OR","AND","XOR");
+    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV","OR","AND","XOR","SHF");
     private static List<String> suffix =new ArrayList<>();
     public static MyNumber doCalculate(List<String>formula) {
         suffix=doTransform(formula);
@@ -47,6 +47,9 @@ public class Calculate {
                         break;
                     case "XOR":
                         res = new Xor(num1, num2).getResult();
+                        break;
+                    case "SHF":
+                        res = new Shf(num1, num2).getResult();
                         break;
                     default:
                         throw new RuntimeException("运算符错误！");
