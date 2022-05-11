@@ -14,13 +14,45 @@ public class Calculate {
     }
 
     public Calculate(List<String> list) {
-        myFormula = list;
+        setFormula(list);
     }
 
     public void setFormula(List<String> list) {
-        myFormula = list;
+        Log("Calculate", "setFormula(List<String> list:" + list + ")", "");
+        String symbolStr="";
+        for (int i = 0; i < list.size(); i++) {
+        if(isOperator(list.get(i)))
+            symbolStr+= "+";
+        else if(isNumber(list.get(i)))
+            symbolStr+="1";
+        else if(list.get(i).equals("("))
+            symbolStr+="(";
+        else if(list.get(i).equals(")"))
+            symbolStr+=")";
+        }
+        Log("Calculate", "setFormula(List<String> list:" + list + ")", symbolStr);
+        if(!isTrue(symbolStr)) {
+            throw new RuntimeException("");
+        }else {
+            myFormula = list;
+        }
     }
-
+    public static boolean isTrue(String str){
+        int flag=0;
+        if (str.matches("(\\(*\\d+[+/*-])+((\\(*(\\d+[+/*-])*\\d+\\)*)[+/*-])*\\d+\\)*")) {
+            for (int i = 0; i < str.length(); i++) {
+                char c = str.charAt(i);
+                if (c == '(') {
+                    flag++;
+                }
+                if (c == ')') {
+                    flag--;
+                }
+            }
+            return flag == 0;
+        }
+        return false;
+    }
     public MyNumber doCalculate() {
         int[] priorityArr = new int[myFormula.size()];
 //        括号优先级
