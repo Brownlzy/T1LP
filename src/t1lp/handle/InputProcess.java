@@ -32,10 +32,10 @@ public class InputProcess {
                 || Data.ledNumber.getScale() == 10 && sDEC.contains(input)
                 || Data.ledNumber.getScale() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
                 || input.equals(".") && Data.ledNumber.contains(".") //第二次输入小数点
-                || Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
-                || !Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
-                || Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
-                || !Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8 //不含有-和.长度不超过8
+                || Data.inState==0&&Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
+                || Data.inState==0&&!Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
+                || Data.inState==0&&Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
+                || Data.inState==0&&!Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8 //不含有-和.长度不超过8
         ) {
             Log("InputProcess", "dealInsert(String input:" + input + ")", "未满足输入限制条件，ledNumber未改变");
         } else {
