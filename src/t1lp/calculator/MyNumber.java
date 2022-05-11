@@ -227,8 +227,16 @@ public class MyNumber {
         number = Long.toString(~Long.parseLong(number, scale), scale);
     }
 
+    private int backtip(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (Objects.equals(number.charAt(31), '0'))
+                return i;
+        }
+        return 0;
+    }
+
     public void toDRC() {
-        if(!isPositive()) {
+        if (!isPositive()) {
             if (scale == 10) {
                 number = toString(2);
                 setNumber(number);
@@ -260,14 +268,58 @@ public class MyNumber {
                 setNumber(result.toString());
                 number = result.toString();
             }
-        }else{
+        } else {
+            return;
         }
     }
-    public void toComplement(){
+
+    public void toComplement() {
         if (scale == 10) {
             changeSign();
-        }else if(scale == 16){
-
+        } else if (scale == 16) {
+            number = toString(2);
+            setNumber(number);
+            toDRC();
+            StringBuilder result = new StringBuilder();
+            if (Objects.equals(number.charAt(31), '0')) {
+                for (int i = 0; i < number.length() - 1; i++) {
+                    result.append((int) number.charAt(i));
+                }
+                result.append((int) number.charAt(31) + 1);
+            } else {
+                for (int i = 0; i < backtip(number); i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+                result.append((int) number.charAt(backtip(number)) + 1);
+                for (int i = backtip(number) + 1; i < number.length() - 1; i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+            }
+            result = new StringBuilder(toString(16));
+            setNumber(result.toString());
+            number = result.toString();
+        } else {
+            number = toString(2);
+            setNumber(number);
+            toDRC();
+            StringBuilder result = new StringBuilder();
+            if (Objects.equals(number.charAt(31), '0')) {
+                for (int i = 0; i < number.length() - 1; i++) {
+                    result.append((int) number.charAt(i));
+                }
+                result.append((int) number.charAt(31) + 1);
+            } else {
+                for (int i = 0; i < backtip(number); i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+                result.append((int) number.charAt(backtip(number)) + 1);
+                for (int i = backtip(number) + 1; i < number.length() - 1; i++) {
+                    result.append(1 - (int) number.charAt(i));
+                }
+            }
+            result = new StringBuilder(toString(8));
+            setNumber(result.toString());
+            number = result.toString();
         }
     }
 }
