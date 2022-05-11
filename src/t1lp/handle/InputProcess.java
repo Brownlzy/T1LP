@@ -27,7 +27,6 @@ public class InputProcess {
         String sOCT = "89AbCdEF.";
         String sDEC = "AbCdEF";
         String sHEX = ".";
-        //Todo：8位数字按下计算符号后无法输入
         if (Data.ledNumber.getScale() == 8 && sOCT.contains(input)
                 || Data.ledNumber.getScale() == 10 && sDEC.contains(input)
                 || Data.ledNumber.getScale() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
@@ -48,13 +47,6 @@ public class InputProcess {
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
                 case 1:
-                    Data.inState = 0;
-                    Data.formula.clear();
-                    Data.ledNumber.setNumber(0);
-                    Data.ledNumber.setScale(tmpScale);
-                    Data.ledNumber.append(input);
-                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
-                    break;
                 case 2:
                     Data.inState = 0;
                     Data.formula.clear();
@@ -257,6 +249,7 @@ public class InputProcess {
                 Data.formula.clear();
                 Data.formula.add(Data.result.toString());
                 Data.formula.add(operator);
+                Data.inState=3;
                 break;
             case 3:
                 Data.formula.remove(Data.formula.size() - 1);
