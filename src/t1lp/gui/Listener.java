@@ -69,7 +69,7 @@ class Listener {
          */
         @Override
         public void keyTyped(KeyEvent e) {
-            Log("KeyboardListener", "keyTyped(KeyEvent e:" + e.getKeyCode() + ")", "接受按键" + e.getKeyCode() + "(" + e.getKeyChar() + ")");
+            Log("KeyboardListener", "keyTyped(KeyEvent e:" + e.getKeyChar() + ")", "接受按键" + e.getKeyChar() + "(" + e.getKeyChar() + ")");
             if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' //数字0-9
                     || e.getKeyChar() >= 'a' && e.getKeyChar() <= 'f' //小写a-f
                     || e.getKeyChar() >= 'A' && e.getKeyChar() <= 'F' //大写A-F
