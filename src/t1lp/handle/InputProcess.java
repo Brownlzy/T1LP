@@ -175,17 +175,28 @@ public class InputProcess {
 
                 Data.result = Calculate.doCalculate(Data.formula);
                 Data.result.setScale(Data.ledNumber.getScale());
-
-                //TODO:多步运算,等待Calculate完成
-
-                // if(Calculate.isFinished)
                 Data.inState = 4;//计算完毕
                 Data.formula.clear();
-                //else
-                //    Data.inState=6;//未计算完毕
-                //    Data.formula=Calculate.getFormula;
                 setLcdScreen(Data.result, Data.isOpen, Data.isError);
                 Data.ledNumber = Data.result;
+
+                //TODO:多步运算,等待Calculate完成
+/*
+                if(Data.calculate.isFinished())
+                {
+                    Data.calculate.setFormula(Data.formula);
+                }
+                Data.result = Data.calculate.doCalculate();
+                Data.result.setScale(Data.ledNumber.getScale());
+                 if(Calculate.isFinished)
+                Data.inState = 4;//计算完毕
+                Data.formula.clear();
+                else
+                    Data.inState=6;//未计算完毕
+                    Data.formula=Data.calculate.getFormula;
+                setLcdScreen(Data.result, Data.isOpen, Data.isError);
+                Data.ledNumber = Data.result;
+*/
                 break;
             case "+/-":
                 Data.ledNumber.changeSign();
