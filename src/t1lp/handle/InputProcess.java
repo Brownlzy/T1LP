@@ -27,9 +27,9 @@ public class InputProcess {
         String sOCT = "89AbCdEF.";
         String sDEC = "AbCdEF";
         String sHEX = ".";
-        if (Data.ledNumber.getScale() == 8 && sOCT.contains(input)
-                || Data.ledNumber.getScale() == 10 && sDEC.contains(input)
-                || Data.ledNumber.getScale() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
+        if (Data.ledNumber.getRadix() == 8 && sOCT.contains(input)
+                || Data.ledNumber.getRadix() == 10 && sDEC.contains(input)
+                || Data.ledNumber.getRadix() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
                 || input.equals(".") && Data.ledNumber.contains(".") //第二次输入小数点
                 || Data.inState==0&&Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
                 || Data.inState==0&&!Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
@@ -40,7 +40,7 @@ public class InputProcess {
         } else {
             //满足输入调件
             Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.inState=" + Data.inState);
-            int tmpScale = Data.ledNumber.getScale();
+            int tmpScale = Data.ledNumber.getRadix();
             switch (Data.inState) { //0：输入本次计算式，1：上次分步运算未结束，2：运算结束,3：运算符已输入
                 case 0:
                     Data.ledNumber.append(input);
@@ -51,14 +51,14 @@ public class InputProcess {
                     Data.inState = 0;
                     Data.formula.clear();
                     Data.ledNumber.setNumber(0);
-                    Data.ledNumber.setScale(tmpScale);
+                    Data.ledNumber.setRadix(tmpScale);
                     Data.ledNumber.append(input);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
                 case 3:
                     Data.inState=0;
                     Data.ledNumber.setNumber(0);
-                    Data.ledNumber.setScale(tmpScale);
+                    Data.ledNumber.setRadix(tmpScale);
                     Data.ledNumber.append(input);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
@@ -83,17 +83,17 @@ public class InputProcess {
         Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.inState=" + Data.inState);
         switch (actionCommand) {
             case "HEX": {
-                Data.ledNumber.setScale(16);
+                Data.ledNumber.setRadix(16);
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
             }
             break;
             case "DEC": {
-                Data.ledNumber.setScale(10);
+                Data.ledNumber.setRadix(10);
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
             }
             break;
             case "OCT": {
-                Data.ledNumber.setScale(8);
+                Data.ledNumber.setRadix(8);
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
             }
             break;
@@ -123,10 +123,10 @@ public class InputProcess {
                         Data.formula.add("(");}
                 }else{
                     Data.formula.clear();
-                    int tmpScale = Data.ledNumber.getScale();
+                    int tmpScale = Data.ledNumber.getRadix();
                     Data.formula.add("(");
                     Data.ledNumber.setNumber(0);
-                    Data.ledNumber.setScale(tmpScale);
+                    Data.ledNumber.setRadix(tmpScale);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 }
 
@@ -140,14 +140,14 @@ public class InputProcess {
                 }
                 break;
             case "1'sC":
-                Data.ledNumber.setInverse();
+                Data.ledNumber.toNOT();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "OR":
             case "AND":
             case "XOR":
             case "SHF":
-                if (Data.ledNumber.getScale() == 10) {  //10进制下不支持位运算！
+                if (Data.ledNumber.getRadix() == 10) {  //10进制下不支持位运算！
                     Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "10进制下不支持位运算！");
                     return;
                 }
@@ -196,7 +196,7 @@ public class InputProcess {
                     }
                 }
                 Data.result = Data.calculate.doCalculate();
-                Data.result.setScale(Data.ledNumber.getScale());
+                Data.result.setRadix(Data.ledNumber.getRadix());
                 if (Data.calculate.isFinished()) {
                     Data.inState = 2;//计算完毕
                     Data.formula.clear();
@@ -209,7 +209,10 @@ public class InputProcess {
 
                 break;
             case "+/-":
-                Data.ledNumber.changeSign();
+                if(Data.ledNumber.getRadix()==10)
+                    Data.ledNumber.changeSign();
+                else
+                    Data.ledNumber.toNOT2();
                 setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                 break;
             case "BKS":
