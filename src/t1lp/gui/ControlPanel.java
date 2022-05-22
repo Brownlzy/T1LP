@@ -2,6 +2,8 @@ package t1lp.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 包含计算器所有按钮的面板
@@ -21,6 +23,7 @@ class ControlPanel extends JPanel {
             "XOR", "1", "2", "3", "+",
             "CE", "0", ".", "+/-", "="
     };  //按钮标题数组
+    private static final List<String> disabledName = Arrays.asList("STO", "RCL", "SUM", "K");
 
     /**
      * 构造函数，使用Windows风格UI
@@ -69,6 +72,8 @@ class ControlPanel extends JPanel {
                 ctrlButton[i].addActionListener(commandListener);
                 ctrlButton[i].setFont(new Font("Consolas", Font.BOLD, 13));
             }
+            if (disabledName.contains(ctrlButton[i].getText()))
+                ctrlButton[i].setEnabled(false);
             //加入控制面板
             this.add(ctrlButton[i]);
         }
