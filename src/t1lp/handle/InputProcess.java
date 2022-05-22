@@ -31,10 +31,11 @@ public class InputProcess {
                 || Data.ledNumber.getRadix() == 10 && sDEC.contains(input)
                 || Data.ledNumber.getRadix() == 16 && sHEX.contains(input) //输入的是对应进制不应该出现的字符
                 || input.equals(".") && Data.ledNumber.contains(".") //第二次输入小数点
-                || Data.inState==0&&Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
-                || Data.inState==0&&!Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
-                || Data.inState==0&&Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
-                || Data.inState==0&&!Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8 //不含有-和.长度不超过8
+                || Data.inState == 0 &&
+                (Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 10 //含有-和.的长度不超过10
+                        || !Data.ledNumber.contains(".") && Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有-长度不超过9
+                        || Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 9 //只含有.长度不超过9
+                        || !Data.ledNumber.contains(".") && !Data.ledNumber.contains("-") && Data.ledNumber.length() >= 8)//不含有-和.长度不超过8
         ) {
             Log("InputProcess", "dealInsert(String input:" + input + ")", "未满足输入限制条件，ledNumber未改变");
         } else {
@@ -56,13 +57,13 @@ public class InputProcess {
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
                 case 3:
-                    Data.inState=0;
+                    Data.inState = 0;
                     Data.ledNumber.setNumber(0);
                     Data.ledNumber.setRadix(tmpScale);
                     Data.ledNumber.append(input);
                     setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
                     break;
-                    default:
+                default:
                     throw new UnsupportedOperationException("未知的inState");
             }
             Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.formula:" + Data.formula + Data.ledNumber);
@@ -118,10 +119,11 @@ public class InputProcess {
                 break;
             //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
             case "(":
-                if(Data.inState==0||Data.inState==3){
-                if(Data.formula.size()==0||(Data.formula.get(Data.formula.size() - 1).equals("(")||Data.inState==3)){
-                        Data.formula.add("(");}
-                }else{
+                if (Data.inState == 0 || Data.inState == 3) {
+                    if (Data.formula.size() == 0 || (Data.formula.get(Data.formula.size() - 1).equals("(") || Data.inState == 3)) {
+                        Data.formula.add("(");
+                    }
+                } else {
                     Data.formula.clear();
                     int tmpScale = Data.ledNumber.getRadix();
                     Data.formula.add("(");
@@ -132,10 +134,10 @@ public class InputProcess {
 
                 break;
             case ")":
-                if(Data.inState==0&&Data.formula.size()>0&&Calculate.isOperator(Data.formula.get(Data.formula.size() - 1))){
+                if (Data.inState == 0 && Data.formula.size() > 0 && Calculate.isOperator(Data.formula.get(Data.formula.size() - 1))) {
                     Data.formula.add(Data.ledNumber.toString());
                     Data.formula.add(")");
-                }else if(Data.inState==0&&Data.formula.size()>0&&Data.formula.get(Data.formula.size() - 1).equals(")")){
+                } else if (Data.inState == 0 && Data.formula.size() > 0 && Data.formula.get(Data.formula.size() - 1).equals(")")) {
                     Data.formula.add(")");
                 }
                 break;
@@ -177,8 +179,7 @@ public class InputProcess {
             case "=":
                 addOperatorToFormula("#");
                 Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "Data.formula:" + Data.formula + Data.ledNumber);
-                if(Data.formula.size()==2&& Data.formula.get(1).equals("#"))
-                {
+                if (Data.formula.size() == 2 && Data.formula.get(1).equals("#")) {
                     Data.result.setNumber(Data.formula.get(0));
                     Data.inState = 2;//计算完毕
                     Data.formula.clear();
@@ -209,7 +210,7 @@ public class InputProcess {
 
                 break;
             case "+/-":
-                if(Data.ledNumber.getRadix()==10)
+                if (Data.ledNumber.getRadix() == 10)
                     Data.ledNumber.changeSign();
                 else
                     Data.ledNumber.toNOT2();
@@ -234,16 +235,16 @@ public class InputProcess {
     public static void addOperatorToFormula(String operator) {
         switch (Data.inState) { //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
             case 0:
-                if (Data.formula.size()>0&&Data.formula.get(Data.formula.size() - 1).equals("(")) {
+                if (Data.formula.size() > 0 && Data.formula.get(Data.formula.size() - 1).equals("(")) {
                     Data.formula.add(Data.ledNumber.toString());
                     Data.formula.add(operator);
-                } else if (Data.formula.size()>0&&Data.formula.get(Data.formula.size() - 1).equals(")")) {
+                } else if (Data.formula.size() > 0 && Data.formula.get(Data.formula.size() - 1).equals(")")) {
                     Data.formula.add(operator);
                 } else {
                     Data.formula.add(Data.ledNumber.toString());
                     Data.formula.add(operator);
                 }
-                Data.inState=3;
+                Data.inState = 3;
                 break;
             case 1:
                 break;
@@ -252,7 +253,7 @@ public class InputProcess {
                 Data.formula.clear();
                 Data.formula.add(Data.result.toString());
                 Data.formula.add(operator);
-                Data.inState=3;
+                Data.inState = 3;
                 break;
             case 3:
                 Data.formula.remove(Data.formula.size() - 1);

@@ -25,8 +25,7 @@ public class Data {
     public static MyNumber result;    //计算结果
     public static boolean isError;  //计算器是否出错
     public static int inState;  //计算器当前状态
-    // 0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
-
+    //0：输入本次计算式，1：上次分步运算未结束，2：运算结束,3：运算符已输入
     public static MainWindow ui;    //计算器主窗口
 
     /**

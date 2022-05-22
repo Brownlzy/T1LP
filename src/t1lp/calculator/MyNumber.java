@@ -72,7 +72,6 @@ public class MyNumber {
     }
 
     public String toString(int s) {
-        //Todo:负数进制转换有问题
         Log("MyNumber", "toString(int s:" + s + ")", radix + " " + number);
         if (s != radix)
             setRadix(s);
@@ -89,6 +88,57 @@ public class MyNumber {
         return null;
     }
 
+    private String intToString(int x,int radix){
+        String tmpNumber=Integer.toString(x,radix);
+        if(x>=0){
+            return tmpNumber;
+        }else{
+            char[] tmp;
+            switch (radix){
+                case 10:
+                    return tmpNumber;
+                case 2:
+                    tmp=new char[32];
+                    tmpNumber=Integer.toString(-2147483648-x,radix);
+                    for (int i=31;i>=0;i--){
+                        if(tmpNumber.length()+i-32>0){
+                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-32);
+                        }else{
+                            tmp[i]='0';
+                        }
+                    }
+                    tmp[0]='1';
+                    return String.valueOf(tmp);
+                case 8:
+                    tmp=new char[11];
+                    tmpNumber=Integer.toString(-2147483648-x,radix);
+                    for (int i=10;i>=0;i--){
+                        if(tmpNumber.length()+i-11>0){
+                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-11);
+                        }else{
+                            tmp[i]='0';
+                        }
+                    }
+                    tmp[0]=Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]),8)+2).charAt(0);
+                    return String.valueOf(tmp);
+                case 16:
+                    tmp=new char[8];
+                    tmpNumber=Integer.toString(-2147483648-x,radix);
+                    for (int i=7;i>=0;i--){
+                        if(tmpNumber.length()+i-8>0){
+                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-8);
+                        }else{
+                            tmp[i]='0';
+                        }
+                    }
+                    tmp[0]=Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]),16)+8).charAt(0);
+                    return String.valueOf(tmp);
+                default:
+                    return null;
+            }
+        }
+    }
+
     public int getRadix() {
         return radix;
     }
@@ -97,24 +147,8 @@ public class MyNumber {
     }
     public void setRadix(int s) {
         if (s == 10 && radix == 10) return;
-        number = Integer.toString(valueOf(number.split("\\.")[0], radix), s);
+        number = intToString(valueOf(number.split("\\.")[0], radix), s);
         radix = s;
-        switch (s){
-            case 16:
-                if(number.contains("-"))
-                {
-                    char[] tmp=new char[8];
-                    for (int i=7;i>=0;i--){
-                        if(number.length()+i-8>0){
-                            tmp[i]=number.charAt(number.length()+i-8);
-                        }else{
-                            tmp[i]='0';
-                        }
-                    }
-                    tmp[0]=Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]),16)+8).charAt(0);
-                    number=String.valueOf(tmp);
-                }
-        }
     }
 
     public boolean isPositive() {
@@ -160,17 +194,26 @@ public class MyNumber {
                 if (!isPositive(s, radix)) {
                     tmp = "-" + s.substring(1);
                 }
-                return Integer.valueOf(tmp, radix);
+                if(tmp.contains("-"))
+                    return -2147483648-Integer.valueOf(tmp, radix);
+                else
+                    return Integer.valueOf(tmp, radix);
             case 8:
                 if (!isPositive(s, radix)) {
-                    tmp = "-"+(s.charAt(0)-4) + s.substring(1);
+                    tmp = "-"+Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)),8)-4) + s.substring(1);
                 }
-                return Integer.valueOf(tmp, radix);
+                if(tmp.contains("-"))
+                    return -2147483648-Integer.valueOf(tmp, radix);
+                else
+                    return Integer.valueOf(tmp, radix);
             case 16:
                 if (!isPositive(s, radix)) {
                     tmp = "-" +Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)),16)-8) + s.substring(1);
                 }
-                return Integer.valueOf(tmp, radix);
+                if(tmp.contains("-"))
+                    return -2147483648-Integer.valueOf(tmp, radix);
+                else
+                    return Integer.valueOf(tmp, radix);
             case 10:
                     return Integer.valueOf(tmp, radix);
             default:
