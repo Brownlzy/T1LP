@@ -102,6 +102,7 @@ public class InputProcess {
                 setLcdScreen(false);
                 break;
             case "ON/C":
+                Data.resetCalculator();
                 setLcdScreen(Data.ledNumber, false);
                 setLcdScreen(true);
                 break;
