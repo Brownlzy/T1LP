@@ -6,7 +6,7 @@ import static t1lp.handle.Config.Log;
 
 public class Calculate {
     private List<String> myFormula;
-    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR");
+    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR","SHF");
     private List<String> suffix = new ArrayList<>();
 
     public Calculate() {
@@ -20,15 +20,15 @@ public class Calculate {
     public void setFormula(List<String> list) {
         Log("Calculate", "setFormula(List<String> list:" + list + ")", "");
         String symbolStr="";
-        for (int i = 0; i < list.size(); i++) {
-        if(isOperator(list.get(i)))
-            symbolStr+= "+";
-        else if(isNumber(list.get(i)))
-            symbolStr+="1";
-        else if(list.get(i).equals("("))
-            symbolStr+="(";
-        else if(list.get(i).equals(")"))
-            symbolStr+=")";
+        for (String s : list) {
+            if (isOperator(s))
+                symbolStr += "+";
+            else if (isNumber(s))
+                symbolStr += "1";
+            else if (s.equals("("))
+                symbolStr += "(";
+            else if (s.equals(")"))
+                symbolStr += ")";
         }
         Log("Calculate", "setFormula(List<String> list:" + list + ")", symbolStr);
         if(!isTrue(symbolStr)) {
@@ -141,10 +141,7 @@ public class Calculate {
      * @author ConradLee
      */
     public boolean isFinished() {
-        if (myFormula.size() == 2 && myFormula.get(1).equals("#"))
-            return true;
-        else
-            return false;
+        return myFormula.size() == 2 && myFormula.get(1).equals("#");
     }
 
     /**
@@ -210,7 +207,7 @@ public class Calculate {
                     case "XOR":
                         res = new Xor(num1, num2).getResult();
                         break;
-                    case "Shf":
+                    case "SHF":
                         res=new Shf(num1,num2).getResult();
                         break;
                     default:
