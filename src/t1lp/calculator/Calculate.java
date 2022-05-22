@@ -37,6 +37,13 @@ public class Calculate {
             myFormula = list;
         }
     }
+    /**
+     * 表达式合法性检测
+     *
+     * @param str 待判断的表达式
+     * @return boolean
+     * @author ConradLee
+    */
     public static boolean isTrue(String str){
         int flag=0;
         if (str.matches("(\\(*\\d+[+/*-])+((\\(*(\\d+[+/*-])*\\d+\\)*)[+/*-])*\\d+\\)*")) {
@@ -53,6 +60,13 @@ public class Calculate {
         }
         return false;
     }
+
+    /**
+     * 对表达式中的括号进行优先级定义
+     *
+     * @return String
+     * @author ConradLee
+     */
     public MyNumber doCalculate() {
         int[] priorityArr = new int[myFormula.size()];
 //        括号优先级
@@ -120,6 +134,12 @@ public class Calculate {
         }
     }
 
+    /**
+     * 判断表达式是否读取完毕
+     *
+     * @return boolean
+     * @author ConradLee
+     */
     public boolean isFinished() {
         if (myFormula.size() == 2 && myFormula.get(1).equals("#"))
             return true;
@@ -127,10 +147,22 @@ public class Calculate {
             return false;
     }
 
+    /**
+     * 获取表达式
+     *
+     * @return List
+     * @author ConradLee
+     */
     public List<String> getFormula() {
         return myFormula;
     }
 
+    /**
+     * 执行运算
+     *
+     * @param formula 表达式
+     * @author ConradLee
+     */
     private MyNumber doCalculate(List<String> formula) {
         Log("Calculate", "MyNumber doCalculate(List<String>formula:" + formula + ")", "");
         suffix = doTransform(formula);
@@ -177,6 +209,9 @@ public class Calculate {
                         break;
                     case "XOR":
                         res = new Xor(num1, num2).getResult();
+                        break;
+                    case "Shf":
+                        res=new Shf(num1,num2).getResult();
                         break;
                     default:
                         throw new RuntimeException("运算符错误！");
