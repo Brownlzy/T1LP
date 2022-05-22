@@ -6,8 +6,7 @@ import static t1lp.handle.Config.Log;
 
 public class Calculate {
     private List<String> myFormula;
-    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR","SHF");
-    private List<String> suffix = new ArrayList<>();
+    private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR", "SHF");
 
     public Calculate() {
         myFormula = Arrays.asList("NUM0d0", "#");
@@ -19,7 +18,7 @@ public class Calculate {
 
     public void setFormula(List<String> list) {
         Log("Calculate", "setFormula(List<String> list:" + list + ")", "");
-        String symbolStr="";
+        String symbolStr = "";
         for (String s : list) {
             if (isOperator(s))
                 symbolStr += "+";
@@ -31,21 +30,22 @@ public class Calculate {
                 symbolStr += ")";
         }
         Log("Calculate", "setFormula(List<String> list:" + list + ")", symbolStr);
-        if(!isTrue(symbolStr)) {
+        if (!isTrue(symbolStr)) {
             throw new RuntimeException("");
-        }else {
+        } else {
             myFormula = list;
         }
     }
+
     /**
      * 表达式合法性检测
      *
      * @param str 待判断的表达式
      * @return boolean
      * @author ConradLee
-    */
-    public static boolean isTrue(String str){
-        int flag=0;
+     */
+    public static boolean isTrue(String str) {
+        int flag = 0;
         if (str.matches("(\\(*\\d+[+/*-])+((\\(*(\\d+[+/*-])*\\d+\\)*)[+/*-])*\\d+\\)*")) {
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
@@ -162,7 +162,7 @@ public class Calculate {
      */
     private MyNumber doCalculate(List<String> formula) {
         Log("Calculate", "MyNumber doCalculate(List<String>formula:" + formula + ")", "");
-        suffix = doTransform(formula);
+        List<String> suffix = doTransform(formula);
         return new MyNumber(calculate(suffix));
     }
 
@@ -208,7 +208,7 @@ public class Calculate {
                         res = new Xor(num1, num2).getResult();
                         break;
                     case "SHF":
-                        res=new Shf(num1,num2).getResult();
+                        res = new Shf(num1, num2).getResult();
                         break;
                     default:
                         throw new RuntimeException("运算符错误！");

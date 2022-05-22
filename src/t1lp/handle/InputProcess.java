@@ -45,7 +45,7 @@ public class InputProcess {
             switch (Data.inState) { //0：输入本次计算式，1：上次分步运算未结束，2：运算结束,3：运算符已输入
                 case 0:
                     Data.ledNumber.append(input);
-                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    setLcdScreen(Data.ledNumber, false);
                     break;
                 case 1:
                 case 2:
@@ -54,14 +54,14 @@ public class InputProcess {
                     Data.ledNumber.setNumber(0);
                     Data.ledNumber.setRadix(tmpScale);
                     Data.ledNumber.append(input);
-                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    setLcdScreen(Data.ledNumber, false);
                     break;
                 case 3:
                     Data.inState = 0;
                     Data.ledNumber.setNumber(0);
                     Data.ledNumber.setRadix(tmpScale);
                     Data.ledNumber.append(input);
-                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    setLcdScreen(Data.ledNumber, false);
                     break;
                 default:
                     throw new UnsupportedOperationException("未知的inState");
@@ -85,28 +85,25 @@ public class InputProcess {
         switch (actionCommand) {
             case "HEX": {
                 Data.ledNumber.setRadix(16);
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
             }
             break;
             case "DEC": {
                 Data.ledNumber.setRadix(10);
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
             }
             break;
             case "OCT": {
                 Data.ledNumber.setRadix(8);
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
             }
             break;
             case "OFF":
-                Data.isOpen = false;
-                Data.resetCalculator();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(false);
                 break;
             case "ON/C":
-                Data.isOpen = true;
-                Data.resetCalculator();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
+                setLcdScreen(true);
                 break;
             case "STO":
 
@@ -129,7 +126,7 @@ public class InputProcess {
                     Data.formula.add("(");
                     Data.ledNumber.setNumber(0);
                     Data.ledNumber.setRadix(tmpScale);
-                    setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                    setLcdScreen(Data.ledNumber, false);
                 }
 
                 break;
@@ -143,7 +140,7 @@ public class InputProcess {
                 break;
             case "1'sC":
                 Data.ledNumber.toNOT();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
                 break;
             case "OR":
             case "AND":
@@ -157,7 +154,7 @@ public class InputProcess {
                 break;
             case "CE":
                 Data.ledNumber.cleanEntry();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
                 break;
             case "K":
 
@@ -183,7 +180,7 @@ public class InputProcess {
                     Data.result.setNumber(Data.formula.get(0));
                     Data.inState = 2;//计算完毕
                     Data.formula.clear();
-                    setLcdScreen(Data.result, Data.isOpen, Data.isError);
+                    setLcdScreen(Data.result, false);
                     Data.ledNumber = Data.result;
                     break;
                 }
@@ -192,8 +189,8 @@ public class InputProcess {
                         Data.calculate.setFormula(Data.formula);
                     } catch (RuntimeException e) {
                         Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "setFormula:" + e.getMessage());
-                        Data.isError = true;
-                        setLcdScreen(Data.ledNumber, Data.isOpen, true);
+
+                        setLcdScreen(Data.ledNumber, true);
                     }
                 }
                 Data.result = Data.calculate.doCalculate();
@@ -205,7 +202,7 @@ public class InputProcess {
                     Data.inState = 1;//未计算完毕
                     Data.formula = Data.calculate.getFormula();
                 }
-                setLcdScreen(Data.result, Data.isOpen, Data.isError);
+                setLcdScreen(Data.result, false);
                 Data.ledNumber = Data.result;
 
                 break;
@@ -214,11 +211,11 @@ public class InputProcess {
                     Data.ledNumber.changeSign();
                 else
                     Data.ledNumber.toNOT2();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
                 break;
             case "BKS":
                 Data.ledNumber.backSpace();
-                setLcdScreen(Data.ledNumber, Data.isOpen, Data.isError);
+                setLcdScreen(Data.ledNumber, false);
                 break;
             default:
                 throw new UnsupportedOperationException("Unexpected value: " + actionCommand);
@@ -267,12 +264,24 @@ public class InputProcess {
     /**
      * 设置显示屏显示内容
      *
+     * @param isOpen 计算器电源状态
+     * @author Brownlzy
+     */
+    public static void setLcdScreen(boolean isOpen) {
+        Data.isOpen = isOpen;
+        Data.resetCalculator();
+        Data.ui.setPower(Data.isOpen);
+    }
+
+    /**
+     * 设置显示屏显示内容
+     *
      * @param myNumber 需要在LCD屏幕上显示的数字
-     * @param isOpen   计算器电源状态
      * @param isError  是否显示E标
      * @author Brownlzy
      */
-    public static void setLcdScreen(MyNumber myNumber, boolean isOpen, boolean isError) {
+    public static void setLcdScreen(MyNumber myNumber, boolean isError) {
+        Data.isError = isError;
         String strNumber = myNumber.toString();
         try {
             strNumber = formatNumber(strNumber);
@@ -280,11 +289,9 @@ public class InputProcess {
         {
             strNumber = e.getMessage();
             Data.isError = true;
-            isError = true;
         }
         Data.ui.setLedNumber(strNumber);
-        Data.ui.setLedState(isError);
-        Data.ui.setPower(isOpen);
+        Data.ui.setLedState(Data.isError);
     }
 
     /**

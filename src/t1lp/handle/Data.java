@@ -47,12 +47,19 @@ public class Data {
      * @author Brownlzy
      */
     public static void resetCalculator() {
+        int radix;
+        if (ledNumber == null) {
+            radix = 10;
+        } else {
+            radix = ledNumber.getRadix();
+        }
         ledNumber = new MyNumber(0);
+        ledNumber.setRadix(radix);
         formula.clear();
         result = new MyNumber(0);
         isError = false;
         inState = 0;
-        calculate=new Calculate();
+        calculate = new Calculate();
         Log("Data", "resetCalculator()", "计算器已重置");
     }
 
