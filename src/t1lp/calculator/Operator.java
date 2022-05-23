@@ -2,6 +2,13 @@ package t1lp.calculator;
 
 import static t1lp.handle.Config.Log;
 
+
+/**
+ * 处理用户输入的两位操作数
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 abstract class Operator {
     boolean judge=false;//辨别传回数值形式的标识符
     char True = '1';
@@ -13,14 +20,24 @@ abstract class Operator {
     protected String Yb;//第二个操作数的二进制形式
     protected String Zb="";//以string形式返回的结果
     public Operator(MyNumber x,MyNumber y){
-        X=Double.parseDouble(x.toString(10).substring(5));
-        Y=Double.parseDouble(y.toString(10).substring(5));
-        Xb=x.toString(2).substring(5);
-        Yb=y.toString(2).substring(5);
+        X=Double.parseDouble(x.toString(10).substring(5));//将X转换为十进制
+        Y=Double.parseDouble(y.toString(10).substring(5));//将Y转换为十进制
+        Xb=x.toString(2).substring(5);//将X转换为二进制
+        Yb=y.toString(2).substring(5);//将Y转换为二进制
+        int Xbnum = Integer.valueOf(Xb);//将二进制X转换为整型
+        int Ybnum = Integer.valueOf(Yb);//将二进制Y转换为整型
+        Xb=String.format("%032d",Xbnum);//将二进制X前面补0
+        Yb=String.format("%032d",Ybnum);//将二进制Y前面补0
         Log("Operator","Operator(MyNumber x:"+x+",MyNumber y:"+y+")","X:"+X+"\tY:"+Y+"\tXb:"+Xb+"\tYb:"+Yb);
         Log("Operator","getResult()","Z:"+Z+"\tZb:"+Zb);
         doCalculate();
     }
+    /**
+     * 实现各种方法的计算
+     *
+     * @return none
+     * @author cjn-worker
+     */
     protected abstract void doCalculate();
     public MyNumber getResult(){
         if(judge==true)
@@ -31,9 +48,10 @@ abstract class Operator {
 }
 
 /**
- * 各种运算
+ * 加法运算
  *
- * @author cjn——worker
+ * @author cjn-worker
+ * @version 1.0
  */
 class Add extends Operator{
 
@@ -48,6 +66,12 @@ class Add extends Operator{
     }
 }
 
+/**
+ * 减法运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Sub extends Operator{
 
     public Sub(MyNumber x, MyNumber y) {
@@ -61,6 +85,12 @@ class Sub extends Operator{
     }
 }
 
+/**
+ * 乘法运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Mul extends Operator{
 
     public Mul(MyNumber x, MyNumber y) {super(x, y);}
@@ -72,6 +102,12 @@ class Mul extends Operator{
     }
 }
 
+/**
+ * 除法运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Div extends Operator{
 
     public Div(MyNumber x, MyNumber y) {super(x, y);}
@@ -83,74 +119,105 @@ class Div extends Operator{
     }
 }
 
+/**
+ * 或运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Or extends Operator{
 
     public Or(MyNumber x, MyNumber y) {super(x, y);}
 
     @Override
     protected void doCalculate() {
+        StringBuilder ZbBuilder = new StringBuilder(Zb);
         for(int i=0;i<Yb.length();i++){
             if(Xb.charAt(i)==True | Yb.charAt(i)==True)
-                Zb+="1";
+                ZbBuilder.append("1");
             else{
-                Zb+="0";
+                ZbBuilder.append("0");
             }
         }
+        Zb=ZbBuilder.toString();
     }
 }
 
+/**
+ * 与运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class And extends Operator{
 
     public And(MyNumber x, MyNumber y) {super(x, y);}
 
     @Override
     protected void doCalculate() {
+        StringBuilder ZbBuilder = new StringBuilder(Zb);
         for(int i=0;i<Yb.length();i++){
             if(Xb.charAt(i)==True & Yb.charAt(i)==True)
-                Zb+="1";
+                ZbBuilder.append("1");
             else{
-                Zb+="0";
+                ZbBuilder.append("0");
             }
         }
+        Zb=ZbBuilder.toString();
     }
 }
 
+/**
+ * 异或运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Xor extends Operator{
 
     public Xor(MyNumber x, MyNumber y) {super(x, y);}
 
     @Override
     protected void doCalculate() {
+        StringBuilder ZbBuilder = new StringBuilder(Zb);
         for(int i=0;i<Yb.length();i++){
             if(Xb.charAt(i)==Yb.charAt(i))
-                Zb+="0";
+                ZbBuilder.append("0");
             else{
-                Zb+="1";
+                ZbBuilder.append("1");
             }
         }
+        Zb=ZbBuilder.toString();
     }
 }
 
+/**
+ * 移位运算
+ *
+ * @author cjn-worker
+ * @version 1.0
+ */
 class Shf extends Operator{
 
     public Shf(MyNumber x, MyNumber y){super(x,y);}
 
     @Override
     protected void doCalculate(){
+        StringBuilder ZbBuilder = new StringBuilder(Zb);
         int change = (int)(Y);
         if(change>0) {
-            String newStr=str+Xb+str;
-            for (int i = Xb.length()+change-1; i < 33+Xb.length()+change-1; i++) {
-                Zb += newStr.charAt(i);
+            String newStr=Xb+str;
+            for (int i =0; i < Xb.length(); i++) {
+                ZbBuilder.append(newStr.charAt(i+change));
             }
         }
         else{
             String newStr=str+Xb;
             for (int i = newStr.length()-Xb.length(); i < newStr.length(); i++) {
-                Zb+=newStr.charAt(i+change);
+                ZbBuilder.append(newStr.charAt(i+change));
             }
         }
-
+        Zb=ZbBuilder.toString();
     }
 }
 
