@@ -186,7 +186,12 @@ public class InputProcess {
                         setLcdScreen(Data.ledNumber, true);
                     }
                 }
-                Data.result = Data.calculate.doCalculate();
+                try {
+                    Data.result = Data.calculate.doCalculate();
+                } catch (ArithmeticException e) {
+                    setLcdScreen(Data.ledNumber, true);
+                    return;
+                }
                 Data.result.setRadix(Data.ledNumber.getRadix());
                 if (Data.calculate.isFinished()) {
                     Data.inState = 2;//计算完毕

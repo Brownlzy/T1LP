@@ -130,6 +130,7 @@ class Div extends Operator {
 
     @Override
     protected void doCalculate() {
+        if(Y==0) throw new ArithmeticException("/ by zero");
         Z = X / Y;
         judge = true;
     }
