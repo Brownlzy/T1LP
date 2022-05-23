@@ -192,7 +192,9 @@ public class InputProcess {
                     setLcdScreen(Data.ledNumber, true);
                     return;
                 }
-                Data.result.setRadix(Data.ledNumber.getRadix());
+                if(!(Data.result.getRadix()==10&&Data.result.contains("E")&&Data.result.contains(".")))
+                    //当计算结果为科学计数法时一定发生了溢出
+                    Data.result.setRadix(Data.ledNumber.getRadix());
                 if (Data.calculate.isFinished()) {
                     Data.inState = 2;//计算完毕
                     Data.formula.clear();
