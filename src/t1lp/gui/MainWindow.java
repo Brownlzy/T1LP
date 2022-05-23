@@ -111,22 +111,11 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * 设置E标显示
-     *
-     * @param isError 是否显示E标
-     * @author Brownlzy
-     */
-    public void setLedState(boolean isError) {
-        Log("MainWindow", "setLedState(boolean isError:" + isError + ")", "Lcd状态显示屏修改为:错误：" + isError);
-        lcdScreen.changeLedState(isError);
-    }
-
-    /**
      * 一个图像组件
      */
     public static class ImageComponent extends JComponent {
-        private int imageWidth;
-        private int imageHeight;
+        private final int imageWidth;
+        private final int imageHeight;
 
         private final Image image;
 

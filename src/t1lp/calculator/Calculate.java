@@ -18,19 +18,19 @@ public class Calculate {
 
     public void setFormula(List<String> list) {
         Log("Calculate", "setFormula(List<String> list:" + list + ")", "");
-        String symbolStr = "";
+        StringBuilder symbolStr = new StringBuilder();
         for (String s : list) {
             if (isOperator(s))
-                symbolStr += "+";
+                symbolStr.append("+");
             else if (isNumber(s))
-                symbolStr += "1";
+                symbolStr.append("1");
             else if (s.equals("("))
-                symbolStr += "(";
+                symbolStr.append ("(");
             else if (s.equals(")"))
-                symbolStr += ")";
+                symbolStr.append(")");
         }
-        Log("Calculate", "setFormula(List<String> list:" + list + ")", symbolStr);
-        if (!isTrue(symbolStr)) {
+        Log("Calculate", "setFormula(List<String> list:" + list + ")", symbolStr.toString());
+        if (!isTrue(symbolStr.toString())) {
             throw new RuntimeException("");
         } else {
             myFormula = list;
@@ -74,7 +74,6 @@ public class Calculate {
         String flag = "(";
         for (int i = 0; i < myFormula.size() - 1; i++) {
 //            不是括号的优先级为-1
-            Log("", "", myFormula.get(i));
             if (!Objects.equals(myFormula.get(i), "(") && !Objects.equals(myFormula.get(i), ")"))
                 priorityArr[i] = -1;
 //            若识别到的括号和上一个括号相同并且都是左括号，优先级+1
@@ -237,19 +236,17 @@ public class Calculate {
             //结束标志
             if (isOperator(item)) {
                 //是操作符 判断操作符栈是否为空
-                if (operatorStack.isEmpty() || "(".equals(operatorStack.peek()) || priority(item) > priority(operatorStack.peek())) {
-                    //为空或者栈顶元素为左括号或者当前操作符大于栈顶操作符直接压栈
-                    operatorStack.push(item);
-                } else {
-                    //否则将栈中元素出栈如队，直到遇到大于当前操作符或者遇到左括号时
+                //为空或者栈顶元素为左括号或者当前操作符大于栈顶操作符直接压栈
+                //否则将栈中元素出栈如队，直到遇到大于当前操作符或者遇到左括号时
+                if (!(operatorStack.isEmpty() || "(".equals(operatorStack.peek()) || priority(item) > priority(operatorStack.peek()))) {
                     while (!operatorStack.isEmpty() && !"(".equals(operatorStack.peek())) {
                         if (priority(item) <= priority(operatorStack.peek())) {
                             suffix.add(operatorStack.pop());
                         }
                     }
-                    //当前操作符压栈
-                    operatorStack.push(item);
                 }
+                //当前操作符压栈
+                operatorStack.push(item);
             } else if (isNumber(item)) {
                 //是数字则直接入队
                 suffix.add(item);

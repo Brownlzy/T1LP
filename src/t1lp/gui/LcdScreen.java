@@ -130,17 +130,6 @@ class LcdScreen extends JPanel {
     /**
      * 修改LCD功能区显示状态
      *
-     * @param scale   新的进制
-     * @param isError 是否出现错误
-     * @author Brownlzy
-     */
-    private void changeLedState(int scale, boolean isError) {
-        labFunction.changeState(scale, isError);
-    }
-
-    /**
-     * 修改LCD功能区显示状态
-     *
      * @param isError 是否出现错误
      * @author Brownlzy
      */
@@ -187,33 +176,6 @@ class LcdScreen extends JPanel {
             isError = false;
             scale = 10;
             this.setFont(new Font("Consolas", Font.BOLD, 18));
-        }
-
-        /**
-         * 构造函数，初始化成员变量
-         *
-         * @param scale   进制
-         * @param isError E标
-         * @author Brownlzy
-         */
-        public LedLabel(int scale, boolean isError) {
-            this.isError = isError;
-            this.scale = scale;
-            this.setFont(new Font("Consolas", Font.BOLD, 18));
-            refreshText();
-        }
-
-        /**
-         * 设置成员变量
-         *
-         * @param scale   进制
-         * @param isError E标
-         * @author Brownlzy
-         */
-        public void changeState(int scale, boolean isError) {
-            this.isError = isError;
-            this.scale = scale;
-            refreshText();
         }
 
         /**
@@ -290,23 +252,12 @@ class LcdScreen extends JPanel {
         };  //储存每个字符需要点亮的二极管ID
 
         private Image[] numberImage;    //储存所有LED字符的图片
-        private Color fontColor = Color.red;    //字体颜色
-        private Color bgColor = Color.black;    //背景颜色
-        private Color maskColor = Color.darkGray;   //未点亮二极管颜色
-        private int dWidth = 12;    //单个数字宽度
-        private int dHeight = 21;   //数字高度
-        private int dGasp = 7;  //数字之间的间隔
-
-        public LedNumber() {
-            init();
-        }
-
-        public LedNumber(int width, int height, int gasp) {
-            dWidth = width;
-            dHeight = height;
-            dGasp = gasp;
-            init();
-        }
+        private final Color fontColor;    //字体颜色
+        private final Color bgColor;    //背景颜色
+        private final Color maskColor;   //未点亮二极管颜色
+        private final int dWidth;    //单个数字宽度
+        private final int dHeight;   //数字高度
+        private final int dGasp;  //数字之间的间隔
 
         /**
          * 构造函数，设置生成的Led数字的参数
@@ -349,7 +300,7 @@ class LcdScreen extends JPanel {
                     g.drawImage(numberImage[17], (width - 1 - i) * (dWidth + dGasp), 0, this);
                     i++;
                 } else {
-                    if (str.charAt(bound - dotCount - i) == '.') {
+                    if (str.charAt(bound - dotCount - i) == '.') {  //绘制小数点
                         g.fillRect((width - i) * (dWidth + dGasp) - dGasp, dHeight - 4 * dHeight / 21, 3 * dWidth / 12, 3 * dHeight / 21);
                         dotCount++;
                     } else {
