@@ -10,14 +10,15 @@ import static t1lp.handle.Config.Log;
  * @version 1.0
  */
 abstract class Operator {
-    boolean judge=false;//辨别传回数值形式的标识符
+    boolean judge = false;//辨别传回数值形式的标识符
     char True = '1';
-    String str="00000000000000000000000000000000";//32个字节的字符串，用于移位后的补0
+    String str = "00000000000000000000000000000000";//32个字节的字符串，用于移位后的补0
     protected double X;//第一个操作数
     protected double Y;//第二个操作数
     protected double Z;//以double形式反馈的结果
     protected String Xb;//第一个操作数的二进制形式
     protected String Yb;//第二个操作数的二进制形式
+
     protected String Zb="";//以string形式返回的结果
     public Operator(MyNumber x,MyNumber y){
         X=Double.parseDouble(x.toString(10).substring(5));//将X转换为十进制
@@ -39,11 +40,13 @@ abstract class Operator {
      * @author cjn-worker
      */
     protected abstract void doCalculate();
-    public MyNumber getResult(){
-        if(judge==true)
+
+    public MyNumber getResult() {
+        Log("Operator", "getResult()", "Z:" + Z + "\tZb:" + Zb);
+        if (judge)
             return new MyNumber(Z);
         else
-            return new MyNumber("NUM0b"+Zb);
+            return new MyNumber("NUM0b" + Zb);
     }
 }
 
@@ -53,7 +56,7 @@ abstract class Operator {
  * @author cjn-worker
  * @version 1.0
  */
-class Add extends Operator{
+class Add extends Operator {
 
     public Add(MyNumber x, MyNumber y) {
         super(x, y);
@@ -61,10 +64,11 @@ class Add extends Operator{
 
     @Override
     protected void doCalculate() {
-        Z=X+Y;
-        judge=true;
+        Z = X + Y;
+        judge = true;
     }
 }
+
 
 /**
  * 减法运算
@@ -74,16 +78,18 @@ class Add extends Operator{
  */
 class Sub extends Operator{
 
+
     public Sub(MyNumber x, MyNumber y) {
         super(x, y);
     }
 
     @Override
     protected void doCalculate() {
-        Z=X-Y;
-        judge=true;
+        Z = X - Y;
+        judge = true;
     }
 }
+
 
 /**
  * 乘法运算
@@ -93,14 +99,18 @@ class Sub extends Operator{
  */
 class Mul extends Operator{
 
-    public Mul(MyNumber x, MyNumber y) {super(x, y);}
+
+    public Mul(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate() {
-        Z=X*Y;
-        judge=true;
+        Z = X * Y;
+        judge = true;
     }
 }
+
 
 /**
  * 除法运算
@@ -110,14 +120,18 @@ class Mul extends Operator{
  */
 class Div extends Operator{
 
-    public Div(MyNumber x, MyNumber y) {super(x, y);}
+
+    public Div(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate() {
-        Z=X/Y;
-        judge=true;
+        Z = X / Y;
+        judge = true;
     }
 }
+
 
 /**
  * 或运算
@@ -127,7 +141,9 @@ class Div extends Operator{
  */
 class Or extends Operator{
 
-    public Or(MyNumber x, MyNumber y) {super(x, y);}
+    public Or(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate() {
@@ -137,11 +153,13 @@ class Or extends Operator{
                 ZbBuilder.append("1");
             else{
                 ZbBuilder.append("0");
+
             }
         }
         Zb=ZbBuilder.toString();
     }
 }
+
 
 /**
  * 与运算
@@ -150,8 +168,9 @@ class Or extends Operator{
  * @version 1.0
  */
 class And extends Operator{
-
-    public And(MyNumber x, MyNumber y) {super(x, y);}
+    public And(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate() {
@@ -167,6 +186,7 @@ class And extends Operator{
     }
 }
 
+
 /**
  * 异或运算
  *
@@ -174,8 +194,9 @@ class And extends Operator{
  * @version 1.0
  */
 class Xor extends Operator{
-
-    public Xor(MyNumber x, MyNumber y) {super(x, y);}
+    public Xor(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate() {
@@ -191,6 +212,7 @@ class Xor extends Operator{
     }
 }
 
+
 /**
  * 移位运算
  *
@@ -198,8 +220,9 @@ class Xor extends Operator{
  * @version 1.0
  */
 class Shf extends Operator{
-
-    public Shf(MyNumber x, MyNumber y){super(x,y);}
+    public Shf(MyNumber x, MyNumber y) {
+        super(x, y);
+    }
 
     @Override
     protected void doCalculate(){

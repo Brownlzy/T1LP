@@ -88,50 +88,50 @@ public class MyNumber {
         return null;
     }
 
-    private String intToString(int x,int radix){
-        String tmpNumber=Integer.toString(x,radix);
-        if(x>=0){
+    private String intToString(int x, int radix) {
+        String tmpNumber = Integer.toString(x, radix);
+        if (x >= 0) {
             return tmpNumber;
-        }else{
+        } else {
             char[] tmp;
-            switch (radix){
+            switch (radix) {
                 case 10:
                     return tmpNumber;
                 case 2:
-                    tmp=new char[32];
-                    tmpNumber=Integer.toString(-2147483648-x,radix);
-                    for (int i=31;i>=0;i--){
-                        if(tmpNumber.length()+i-32>0){
-                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-32);
-                        }else{
-                            tmp[i]='0';
+                    tmp = new char[32];
+                    tmpNumber = Integer.toString(-2147483648 - x, radix);
+                    for (int i = 31; i >= 0; i--) {
+                        if (tmpNumber.length() + i - 32 > 0) {
+                            tmp[i] = tmpNumber.charAt(tmpNumber.length() + i - 32);
+                        } else {
+                            tmp[i] = '0';
                         }
                     }
-                    tmp[0]='1';
+                    tmp[0] = '1';
                     return String.valueOf(tmp);
                 case 8:
-                    tmp=new char[11];
-                    tmpNumber=Integer.toString(-2147483648-x,radix);
-                    for (int i=10;i>=0;i--){
-                        if(tmpNumber.length()+i-11>0){
-                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-11);
-                        }else{
-                            tmp[i]='0';
+                    tmp = new char[11];
+                    tmpNumber = Integer.toString(-2147483648 - x, radix);
+                    for (int i = 10; i >= 0; i--) {
+                        if (tmpNumber.length() + i - 11 > 0) {
+                            tmp[i] = tmpNumber.charAt(tmpNumber.length() + i - 11);
+                        } else {
+                            tmp[i] = '0';
                         }
                     }
-                    tmp[0]=Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]),8)+2).charAt(0);
+                    tmp[0] = Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]), 8) + 2).charAt(0);
                     return String.valueOf(tmp);
                 case 16:
-                    tmp=new char[8];
-                    tmpNumber=Integer.toString(-2147483648-x,radix);
-                    for (int i=7;i>=0;i--){
-                        if(tmpNumber.length()+i-8>0){
-                            tmp[i]=tmpNumber.charAt(tmpNumber.length()+i-8);
-                        }else{
-                            tmp[i]='0';
+                    tmp = new char[8];
+                    tmpNumber = Integer.toString(-2147483648 - x, radix);
+                    for (int i = 7; i >= 0; i--) {
+                        if (tmpNumber.length() + i - 8 > 0) {
+                            tmp[i] = tmpNumber.charAt(tmpNumber.length() + i - 8);
+                        } else {
+                            tmp[i] = '0';
                         }
                     }
-                    tmp[0]=Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]),16)+8).charAt(0);
+                    tmp[0] = Integer.toHexString(Integer.valueOf(String.valueOf(tmp[0]), 16) + 8).charAt(0);
                     return String.valueOf(tmp);
                 default:
                     return null;
@@ -142,9 +142,7 @@ public class MyNumber {
     public int getRadix() {
         return radix;
     }
-    public String toRadixString(int num,int radix){
-        return null;
-    }
+
     public void setRadix(int s) {
         if (s == 10 && radix == 10) return;
         number = intToString(valueOf(number.split("\\.")[0], radix), s);
@@ -152,26 +150,26 @@ public class MyNumber {
     }
 
     public boolean isPositive() {
-        return isPositive(number,radix);
+        return isPositive(number, radix);
     }
 
-    public boolean isPositive(String number,int radix) {
+    public boolean isPositive(String number, int radix) {
         boolean result;
-        switch (radix){
+        switch (radix) {
             case 10:
-                result=!(number.contains("-"));
+                result = !(number.contains("-"));
                 break;
             case 2:
-                result=!(number.length()>=32&&number.charAt(0)>='1');
+                result = !(number.length() >= 32 && number.charAt(0) >= '1');
                 break;
             case 8:
-                result=!(number.length()>=8&&number.charAt(0)>='4');
+                result = !(number.length() >= 8 && number.charAt(0) >= '4');
                 break;
             case 16:
-                result=!(number.length()>=8&&number.charAt(0)>='8');
+                result = !(number.length() >= 8 && number.charAt(0) >= '8');
                 break;
             default:
-                result =true;
+                result = true;
         }
         return result;
     }
@@ -186,36 +184,36 @@ public class MyNumber {
         }
     }
 
-    private int valueOf(String s,int radix){
-        String tmp="";
-        tmp+=s;
+    private int valueOf(String s, int radix) {
+        String tmp = "";
+        tmp += s;
         switch (radix) {
             case 2:
                 if (!isPositive(s, radix)) {
                     tmp = "-" + s.substring(1);
                 }
-                if(tmp.contains("-"))
-                    return -2147483648-Integer.valueOf(tmp, radix);
+                if (tmp.contains("-"))
+                    return -2147483648 - Integer.valueOf(tmp, radix);
                 else
                     return Integer.valueOf(tmp, radix);
             case 8:
                 if (!isPositive(s, radix)) {
-                    tmp = "-"+Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)),8)-4) + s.substring(1);
+                    tmp = "-" + Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)), 8) - 4) + s.substring(1);
                 }
-                if(tmp.contains("-"))
-                    return -2147483648-Integer.valueOf(tmp, radix);
+                if (tmp.contains("-"))
+                    return -2147483648 - Integer.valueOf(tmp, radix);
                 else
                     return Integer.valueOf(tmp, radix);
             case 16:
                 if (!isPositive(s, radix)) {
-                    tmp = "-" +Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)),16)-8) + s.substring(1);
+                    tmp = "-" + Integer.toHexString(Integer.valueOf(String.valueOf(s.charAt(0)), 16) - 8) + s.substring(1);
                 }
-                if(tmp.contains("-"))
-                    return -2147483648-Integer.valueOf(tmp, radix);
+                if (tmp.contains("-"))
+                    return -2147483648 - Integer.valueOf(tmp, radix);
                 else
                     return Integer.valueOf(tmp, radix);
             case 10:
-                    return Integer.valueOf(tmp, radix);
+                return Integer.valueOf(tmp, radix);
             default:
                 return 0;
         }
@@ -228,7 +226,7 @@ public class MyNumber {
      * @author Brownlzy
      */
     public void append(String n) {
-        n=n.toLowerCase();
+        n = n.toLowerCase();
         if (number.equals("0")) {
             if (n.equals("."))
                 number += n;
@@ -244,6 +242,11 @@ public class MyNumber {
         }
     }
 
+    /**
+     * 退格
+     *
+     * @author ShakingX
+     */
     public void backSpace() {
         if (isPositive()) {
             if (number.length() == 1) {
@@ -275,51 +278,39 @@ public class MyNumber {
         return number.contains(m);
     }
 
-    public void setInverse() {
-        System.out.println(Long.parseLong(number, radix) + "---" + ~Long.parseLong(number, radix));
-        number = Long.toString(~Long.parseLong(number, radix), radix);
-    }
-
-    private int findZero(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (Objects.equals(number.charAt(i), '0'))
-                return i;
-        }
-        return 0;
-    }
-
     public void toNOT() {
-        int s= radix;
+        int s = radix;
         toString(2);
         String result = "";
-        Log("MyNumber","toNOT()","number="+number);
-        switch (s){
+        Log("MyNumber", "toNOT()", "number=" + number);
+        switch (s) {
             case 16:
                 for (int i = 0; i < 32; i++) {
                     if (i > 31 - number.length())
-                        if(number.charAt(i - 32 + number.length())=='-')
-                            result=result+'0';
+                        if (number.charAt(i - 32 + number.length()) == '-')
+                            result += '0';
                         else
-                        result = result + ('1' - number.charAt(i - 32 + number.length()));
+                            result += ('1' - number.charAt(i - 32 + number.length()));
                     else
-                        result = result + '1';
+                        result += '1';
                 }
                 setNumber("NUM0b" + result);
                 break;
             case 8:
                 for (int i = 0; i < 24; i++) {
                     if (i > 23 - number.length())
-                        result = result + ('1' - number.charAt(i - 24 + number.length()));
+                        result += '1' - number.charAt(i - 24 + number.length());
                     else
-                        result = result + '1';
+                        result += '1';
                 }
                 setNumber("NUM0b" + result);
                 break;
         }
         setRadix(s);
     }
-    public void toNOT2(){
-        int s= radix;
+
+    public void toNOT2() {
+        int s = radix;
         toNOT();
         setRadix(2);
         char[] result;
