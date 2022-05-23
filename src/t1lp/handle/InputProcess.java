@@ -39,7 +39,7 @@ public class InputProcess {
         ) {
             Log("InputProcess", "dealInsert(String input:" + input + ")", "未满足输入限制条件，ledNumber未改变");
         } else {
-            //满足输入调件
+            //满足输入条件
             Log("InputProcess", "dealInsert(String input:" + input + ")", "Data.inState=" + Data.inState);
             int tmpScale = Data.ledNumber.getRadix();
             switch (Data.inState) { //0：输入本次计算式，1：上次分步运算未结束，2：运算结束,3：运算符已输入
@@ -107,15 +107,11 @@ public class InputProcess {
                 setLcdScreen(true);
                 break;
             case "STO":
-
-                break;
             case "RCL":
-
-                break;
             case "SUM":
-
+            case "K":
+                Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "未知的功能，找不到相关功能的介绍。");
                 break;
-            //0：等待输入数字（括号），1：等待输入数字或符号，2:等待更改运算符、输入括号或新数字，3：等待输入符号，4：计算完成等待输入数字或符号继续计算，5：等待输入数字，6：分步计算未算完
             case "(":
                 if (Data.inState == 0 || Data.inState == 3) {
                     if (Data.formula.size() == 0 || (Data.formula.get(Data.formula.size() - 1).equals("(") || Data.inState == 3)) {
@@ -129,7 +125,6 @@ public class InputProcess {
                     Data.ledNumber.setRadix(tmpScale);
                     setLcdScreen(Data.ledNumber, false);
                 }
-
                 break;
             case ")":
                 if (Data.inState == 0 && Data.formula.size() > 0 && Calculate.isOperator(Data.formula.get(Data.formula.size() - 1))) {
@@ -156,9 +151,6 @@ public class InputProcess {
             case "CE":
                 Data.ledNumber.cleanEntry();
                 setLcdScreen(Data.ledNumber, false);
-                break;
-            case "K":
-
                 break;
             case "÷":
             case "/":
@@ -291,8 +283,7 @@ public class InputProcess {
             strNumber = e.getMessage();
             Data.isError = true;
         }
-        Data.ui.setLedNumber(strNumber);
-        Data.ui.setLedState(Data.isError);
+        Data.ui.setLcdScreen(strNumber, Data.isError);
     }
 
     /**

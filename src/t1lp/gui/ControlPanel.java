@@ -12,7 +12,6 @@ import java.util.List;
  * @version 1.0
  */
 class ControlPanel extends JPanel {
-    private JButton[] ctrlButton;
     private final String[] funName = {
             "DEC", "HEX", "OCT", "OFF", "ON/C",
             "STO", "RCL", "SUM", "(", ")",
@@ -53,7 +52,7 @@ class ControlPanel extends JPanel {
         this.setOpaque(false);
         //不需要Layout，按键将用坐标排列
         this.setLayout(null);
-        ctrlButton = new JButton[40];
+        JButton[] ctrlButton = new JButton[40];
         //设置两个监听器，分别监听输入和命令按钮
         Listener.InsertListener insertListener = new Listener.InsertListener();
         Listener.CommandListener commandListener = new Listener.CommandListener();
