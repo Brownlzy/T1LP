@@ -25,7 +25,7 @@ public class Calculate {
             else if (isNumber(s))
                 symbolStr.append("1");
             else if (s.equals("("))
-                symbolStr.append ("(");
+                symbolStr.append("(");
             else if (s.equals(")"))
                 symbolStr.append(")");
         }
@@ -157,6 +157,7 @@ public class Calculate {
      * 执行运算
      *
      * @param formula 表达式
+     * @return MyNumber
      * @author ConradLee
      */
     private MyNumber doCalculate(List<String> formula) {

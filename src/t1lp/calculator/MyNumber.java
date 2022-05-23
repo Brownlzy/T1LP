@@ -1,6 +1,7 @@
 package t1lp.calculator;
 
 import java.util.Objects;
+
 import static t1lp.handle.Config.Log;
 
 /**
@@ -139,17 +140,22 @@ public class MyNumber {
         }
         return null;
     }
+
     /**
      * 获取当前进制
+     *
+     * @return int
      * @author Brownlzy
      */
     public int getRadix() {
         return radix;
     }
+
     /**
      * 设置进制
-     * @author Brownlzy
+     *
      * @param s 目标进制
+     * @author Brownlzy
      */
     public void setRadix(int s) {
         if (s == 10 && radix == 10) return;
@@ -174,20 +180,24 @@ public class MyNumber {
     public boolean contains(String m) {
         return number.contains(m);
     }
+
     /**
      * 判断当前储存的数字正负
-     * @author Brownlzy
+     *
      * @return boolean
+     * @author Brownlzy
      */
     public boolean isPositive() {
         return isPositive(number, radix);
     }
+
     /**
      * 判断32位下各进制字符串的正负
-     * @author Brownlzy
+     *
      * @param number 要判断的数制
-     * @param radix number的数制
+     * @param radix  number的数制
      * @return boolean
+     * @author Brownlzy
      */
     private boolean isPositive(String number, int radix) {
         boolean result;
@@ -209,8 +219,10 @@ public class MyNumber {
         }
         return result;
     }
+
     /**
      * 用于10进制下进行正负号改变
+     *
      * @author Brownlzy
      */
     public void changeSign() {
@@ -222,12 +234,14 @@ public class MyNumber {
             number = "-" + number;
         }
     }
+
     /**
      * 将字符串数字转为int型(避免Integer。valueOf转换负数出现问题)
-     * @author Brownlzy
-     * @param s 源字符串
+     *
+     * @param s     源字符串
      * @param radix 源进制
      * @return int
+     * @author Brownlzy
      */
     private int valueOf(String s, int radix) {
         String tmp = "";
@@ -266,10 +280,11 @@ public class MyNumber {
 
     /**
      * 将整型数字转化为字符串（避免java自带方法导致的负数转换问题）
-     * @author Brownlzy
-     * @param x 要转换的数字
+     *
+     * @param x     要转换的数字
      * @param radix 目标进制
      * @return java.lang.String
+     * @author Brownlzy
      */
     private String intToString(int x, int radix) {
         String tmpNumber = Integer.toString(x, radix);
@@ -367,8 +382,10 @@ public class MyNumber {
             }
         }
     }
+
     /**
      * 反码运算
+     *
      * @author Brownlzy
      */
     public void toNOT() {
@@ -379,35 +396,37 @@ public class MyNumber {
         StringBuilder resultBuilder;    //使用StringBuilder避免频繁创建新对象
         switch (s) {
             case 16:
-                resultBuilder=new StringBuilder(result);
+                resultBuilder = new StringBuilder(result);
                 for (int i = 0; i < 32; i++) {
                     if (i > 31 - number.length())
                         if (number.charAt(i - 32 + number.length()) == '-')
                             resultBuilder.append('0');
                         else
-                            resultBuilder.append ('1' - number.charAt(i - 32 + number.length()));
+                            resultBuilder.append('1' - number.charAt(i - 32 + number.length()));
                     else
                         resultBuilder.append('1');
                 }
-                result=resultBuilder.toString();
+                result = resultBuilder.toString();
                 setNumber("NUM0b" + result);
                 break;
             case 8:
-                resultBuilder=new StringBuilder(result);
+                resultBuilder = new StringBuilder(result);
                 for (int i = 0; i < 24; i++) {
                     if (i > 23 - number.length())
-                        resultBuilder.append ('1' - number.charAt(i - 24 + number.length()));
+                        resultBuilder.append('1' - number.charAt(i - 24 + number.length()));
                     else
                         resultBuilder.append('1');
                 }
-                result=resultBuilder.toString();
+                result = resultBuilder.toString();
                 setNumber("NUM0b" + result);
                 break;
         }
         setRadix(s);
     }
+
     /**
      * 补码运算
+     *
      * @author Brownlzy
      */
     public void toNOT2() {
