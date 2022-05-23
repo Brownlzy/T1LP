@@ -4,18 +4,41 @@ import java.util.*;
 
 import static t1lp.handle.Config.Log;
 
+/**
+ * 根据所给公式计算
+ *
+ * @author ConradLee Brownlzy
+ * @version 1.0
+ */
 public class Calculate {
     private List<String> myFormula;
     private static final List<String> operator = Arrays.asList("ADD", "SUB", "MUL", "DIV", "OR", "AND", "XOR", "SHF");
 
+    /**
+     * 构造函数
+     *
+     * @author ConradLee
+     */
     public Calculate() {
         myFormula = Arrays.asList("NUM0d0", "#");
     }
 
+    /**
+     * 构造函数
+     *
+     * @param list 计算公式
+     * @author ConradLee
+     */
     public Calculate(List<String> list) {
         setFormula(list);
     }
 
+    /**
+     * 设置当前计算式
+     *
+     * @param list 计算公式
+     * @author ConradLee
+     */
     public void setFormula(List<String> list) {
         Log("Calculate", "setFormula(List<String> list:" + list + ")", "");
         StringBuilder symbolStr = new StringBuilder();
