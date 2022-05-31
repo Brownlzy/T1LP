@@ -182,8 +182,8 @@ public class InputProcess {
                         Data.calculate.setFormula(Data.formula);
                     } catch (RuntimeException e) {
                         Log("InputProcess", "dealCommand(String actionCommand:" + actionCommand + ")", "setFormula:" + e.getMessage());
-
                         setLcdScreen(Data.ledNumber, true);
+                        return;
                     }
                 }
                 try {
